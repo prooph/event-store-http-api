@@ -1,0 +1,69 @@
+{
+    "name": "prooph/event-store-http-api",
+    "description": "EventStore HTTP API",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "homepage": "http://getprooph.org/",
+    "authors": [
+        {
+            "name": "Alexander Miertsch",
+            "email": "contact@prooph.de",
+            "homepage": "http://www.prooph.de"
+        },
+        {
+            "name": "Sascha-Oliver Prolic",
+            "email": "saschaprolic@googlemail.com"
+        }
+    ],
+    "keywords": [
+        "EventStore",
+        "EventSourcing",
+        "DDD",
+        "prooph",
+        "HTTP",
+        "API"
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.1",
+        "container-interop/container-interop": "^1.1",
+        "prooph/event-store" : "dev-develop",
+        "sandrokeil/interop-config": "^1.0",
+        "zendframework/zend-servicemanager": "^3.1.1",
+        "zfcampus/zf-hal": "^1.4.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.6",
+        "phpunit/phpunit-mock-objects": "^3.3.1",
+        "phpspec/prophecy": "dev-patch-1 as 1.6.1",
+        "friendsofphp/php-cs-fixer": "^1.12.2",
+        "satooshi/php-coveralls": "^1.0",
+        "malukenho/docheader": "^0.1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Prooph\\EventStore\\Http\\Api\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ProophTest\\EventStore\\Http\\Api\\": "tests/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs",
+            "@test"
+        ],
+        "cs": "php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v --diff",
+        "test": "phpunit"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/prolic/prophecy.git"
+        }
+    ]
+}
