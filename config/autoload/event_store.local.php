@@ -22,7 +22,7 @@ return [
                 'adapter' => [
                     'type' => MongoDbEventStoreAdapter::class,
                     'options' => [
-                        'db_name' => 'todo',
+                        'db_name' => 'dimabay_event_store',
                         'mongo_connection_alias' => 'mongo_client',
                     ]
                 ],
