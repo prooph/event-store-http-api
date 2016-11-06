@@ -48,7 +48,7 @@ class Stream
             'application/json'
         ];
 
-        if (in_array($request->getHeaderLine('Accept'), $accepted, true)) {
+        if (! in_array($request->getHeaderLine('Accept'), $accepted, true)) {
             return $this->returnDescription($streamName);
         }
 
