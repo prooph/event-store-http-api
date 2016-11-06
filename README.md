@@ -14,7 +14,38 @@ The HTTP API is a standalone software that exposes event streams via HTTP protoc
 
 ## Installation
 
-Todo!
+1)
+
+    cp config/autoload/event_store.local.php.dist config/autoload/event_store.local.php
+
+Make your adjustments.
+
+2)
+
+open your database console and create a database
+
+3)
+
+create your event streams table, see: https://github.com/prooph/event-store-pdo-adapter/tree/master/scripts
+
+4)
+
+create one or more test streams, see: https://gist.github.com/prolic/026caaad55e9f990cd4b2d5000e2735e
+
+5)
+
+php -S 0.0.0.0:8080 -t public/.
+
+## Usage
+
+    curl -i http://localhost:8080/streams/Prooph%5CModel%5CUser/1 -H "Accept: application/vnd.eventstore.atom+json"
+
+    curl -i http://localhost:8080/streams/Prooph%5CModel%5CUser/11/forward/20 -H "Accept: application/vnd.eventstore.atom+json"
+
+    curl -i http://localhost:8080/streams/Prooph%5CModel%5CUser/71/backward/42 -H "Accept: application/vnd.eventstore.atom+json"
+
+    curl -i http://localhost:8080/streams/Prooph%5CModel%5CUser/head/backward/2 -H "Accept: application/vnd.eventstore.atom+json"
+
 
 ## Support
 

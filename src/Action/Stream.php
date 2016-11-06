@@ -52,10 +52,15 @@ class Stream
             return $this->returnDescription($streamName);
         }
 
-        $start = (int) $request->getAttribute('start');
+        $start = $request->getAttribute('start');
         if (0 === $start) { // @todo: make default values in routing ??
             $start = 1;
         }
+        if ('head' === $start) {
+            $start = PHP_INT_MAX;
+        }
+        $start = (int) $start;
+
         $count = (int) $request->getAttribute('count');
         if (0 === $count) { // @todo: make default values in routing ??
             $count = 10;
