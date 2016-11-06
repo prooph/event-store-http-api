@@ -20,7 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
-final class Stream
+class Stream
 {
     /**
      * @var EventStore
@@ -64,13 +64,8 @@ final class Stream
 
         if ($direction === 'backward') {
             $stream = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
-
         } else {
-            try {
-                $stream = $this->eventStore->load(new StreamName($streamName), $start, $count);
-            } catch (\Throwable $e) {
-                var_dump($e->getMessage()); die;
-            }
+            $stream = $this->eventStore->load(new StreamName($streamName), $start, $count);
         }
 
         if (! $stream || ! $stream->streamEvents()->valid()) {
