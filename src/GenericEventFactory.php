@@ -44,6 +44,6 @@ class GenericEventFactory implements MessageFactory
             $messageData['metadata'] = [];
         }
 
-        return new GenericEvent($messageData);
+        return GenericEvent::fromArray($messageData);
     }
 }

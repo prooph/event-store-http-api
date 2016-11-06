@@ -12,25 +12,25 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
-use Prooph\EventStore\Adapter\Doctrine\DoctrineEventStoreAdapter;
-use Prooph\EventStore\Adapter\MongoDb\MongoDbEventStoreAdapter;
+use Prooph\EventStore\Adapter\PDO\PDOEventStoreAdapter;
 
 return [
     'prooph' => [
         'event_store' => [
             'default' => [
                 'adapter' => [
-                    'type' => MongoDbEventStoreAdapter::class,
+                    'type' => PDOEventStoreAdapter::class,
                     'options' => [
-                        'db_name' => 'dimabay_event_store',
-                        'mongo_connection_alias' => 'mongo_client',
-                    ]
+                        'connection_options' => [
+                            'driver' => 'pdo_mysql',
+                            'user' => 'root',
+                            'password' => 'root',
+                            'host' => '127.0.0.1',
+                            'dbname' => 'event_store_http_api',
+                            'port' => 3306,
+                        ],
+                    ],
                 ],
-//              'adapter' => [
-//                  'type' => DoctrineEventStoreAdapter::class,
-//                  'options' => [
-//                      'connection_alias' => 'doctrine.connection.default',
-//              ],
             ],
         ],
     ],

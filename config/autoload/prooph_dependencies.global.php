@@ -12,12 +12,21 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
     'dependencies' => [
+        'aliases' => [
+            \Prooph\Common\Messaging\MessageConverter::class => \Prooph\Common\Messaging\NoOpMessageConverter::class,
+        ],
         'factories' => [
-            \Prooph\Common\Messaging\FQCNMessageFactory::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\MongoDb\\MongoDbEventStoreAdapter' => 'Prooph\\EventStore\\Adapter\\MongoDb\\Container\\MongoDbEventStoreAdapterFactory',
-            'Prooph\\EventStore\\Adapter\\Doctrine\\DoctrineEventStoreAdapter' => 'Prooph\\EventStore\\Adapter\\Doctrine\\Container\\DoctrineEventStoreAdapterFactory',
+            \Prooph\Common\Messaging\FQCNMessageFactory::class => InvokableFactory::class,
+            \Prooph\Common\Messaging\NoOpMessageConverter::class => InvokableFactory::class,
+            // for pdo adapter
+            'Prooph\\EventStore\\Adapter\\PDO\\PDOEventStoreAdapter' => 'Prooph\\EventStore\\Adapter\\PDO\\Container\\PDOEventStoreAdapterFactory',
+            'Prooph\\EventStore\\Adapter\\PDO\\JsonQuerier\\MySQL' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
         ],
     ],
 ];

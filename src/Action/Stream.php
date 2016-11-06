@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Action;
 
+use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,11 +22,20 @@ use Zend\Diactoros\Response\JsonResponse;
 
 final class Stream
 {
+    /**
+     * @var EventStore
+     */
     private $eventStore;
 
-    public function __construct(EventStore $eventStore)
+    /**
+     * @var MessageConverter
+     */
+    private $messageConverter;
+
+    public function __construct(EventStore $eventStore, MessageConverter $messageConverter)
     {
         $this->eventStore = $eventStore;
+        $this->messageConverter = $messageConverter;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
@@ -42,17 +52,37 @@ final class Stream
             return $this->returnDescription($streamName);
         }
 
-        $stream = $this->eventStore->load(new StreamName($streamName));
+        $start = (int) $request->getAttribute('start');
+        if (0 === $start) { // @todo: make default values in routing ??
+            $start = 1;
+        }
+        $count = (int) $request->getAttribute('count');
+        if (0 === $count) { // @todo: make default values in routing ??
+            $count = 10;
+        }
+        $direction = $request->getAttribute('direction');
+
+        if ($direction === 'backward') {
+            $stream = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
+
+        } else {
+            try {
+                $stream = $this->eventStore->load(new StreamName($streamName), $start, $count);
+            } catch (\Throwable $e) {
+                var_dump($e->getMessage()); die;
+            }
+        }
 
         if (! $stream || ! $stream->streamEvents()->valid()) {
             return new HtmlResponse('', 404);
         }
 
-        echo '<pre>';
+        $result = [];
         foreach ($stream->streamEvents() as $event) {
-            echo $event->messageName() . PHP_EOL;
-            echo $event->version() . PHP_EOL;
+            $result[] = $this->messageConverter->convertToArray($event);
         }
+
+        return new JsonResponse($result);
     }
 
     private function returnDescription(string $streamName): JsonResponse

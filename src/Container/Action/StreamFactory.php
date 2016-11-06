@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api\Container\Action;
 
 use Interop\Container\ContainerInterface;
+use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Stream;
 
@@ -20,6 +21,6 @@ final class StreamFactory
 {
     public function __invoke(ContainerInterface $container): Stream
     {
-        return new Stream($container->get(EventStore::class));
+        return new Stream($container->get(EventStore::class), $container->get(MessageConverter::class));
     }
 }

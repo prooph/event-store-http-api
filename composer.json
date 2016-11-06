@@ -34,7 +34,8 @@
         "sandrokeil/interop-config": "^1.0",
         "zendframework/zend-servicemanager": "^3.1.1",
         "zendframework/zend-expressive" : "^1.0",
-        "zendframework/zend-expressive-aurarouter": "^1.0"
+        "zendframework/zend-expressive-aurarouter": "^1.0",
+        "zendframework/zend-stdlib": "^3.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.6",
@@ -44,6 +45,9 @@
         "satooshi/php-coveralls": "^1.0",
         "malukenho/docheader": "^0.1.4"
     },
+    "suggest" : {
+        "prooph/event-store-pdo-adapter": "For usage with PDO as event store adapter"
+    },
     "autoload": {
         "psr-4": {
             "Prooph\\EventStore\\Http\\Api\\": "src/"
@@ -51,7 +55,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ProophTest\\EventStore\\Http\\Api\\": "tests/"
+            "ProophTest\\EventStore\\Http\\Api\\": "tests/",
+            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/"
         }
     },
     "scripts": {

@@ -12,75 +12,21 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
-use DateTimeImmutable;
+use Prooph\Common\Messaging\DomainMessage;
 use Prooph\Common\Messaging\Message;
-use Ramsey\Uuid\Uuid;
+use Prooph\Common\Messaging\PayloadTrait;
 
-final class GenericEvent implements Message
+final class GenericEvent extends DomainMessage
 {
-    private $data;
+    use PayloadTrait;
 
-    public function __construct(array $messageData)
+    public function version(): int
     {
-        $this->data = $messageData;
-    }
-
-    public function payload(): ?array
-    {
-        return $this->data['payload'] ?? null;
-    }
-
-    public function messageName(): string
-    {
-        return $this->data['message_name'];
+        return $this->metadata()['_version'];
     }
 
     public function messageType(): string
     {
         return Message::TYPE_EVENT;
-    }
-
-    public function uuid(): Uuid
-    {
-        return $this->data['uuid'];
-    }
-
-    public function version(): int
-    {
-        return $this->data['version'];
-    }
-
-    public function createdAt(): DateTimeImmutable
-    {
-        return $this->data['created_at'];
-    }
-
-    public function metadata(): array
-    {
-        return $this->data['metadata'];
-    }
-
-    public function withVersion(int $version): Message
-    {
-        $data = $this->data;
-        $data['version'] = $version;
-
-        return new self($data);
-    }
-
-    public function withMetadata(array $metadata): Message
-    {
-        $data = $this->data;
-        $data['metadata'] = $metadata;
-
-        return new self($data);
-    }
-
-    public function withAddedMetadata(string $key, $value): Message
-    {
-        $data = $this->data;
-        $data['metadata'][$key] = $value;
-
-        return new self($data);
     }
 }
