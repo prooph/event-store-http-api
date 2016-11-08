@@ -17,25 +17,25 @@ use Zend\Expressive\Router;
 return [
     'dependencies' => [
         'aliases' => [
-            Router\RouterInterface::class => Router\AuraRouter::class,
+            Router\RouterInterface::class => Router\FastRouteRouter::class,
         ],
         'factories' => [
-            Router\AuraRouter::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
+            Router\FastRouteRouter::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
         ]
     ],
     'routes' => [
         [
-            'name' => 'query::stream',
-            'path' => '/streams/{streamname}{/start,direction,count}',
+            'name' => 'query-stream',
+            'path' => '/streams/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
             'middleware' => Action\Stream::class,
             'allowed_methods' => ['GET'],
             'options' => [
-                'tokens' => [
-                    'start' => 'head|[0-9]+',
-                    'direction' => 'forward|backward',
-                    'count' => '[0-9]+'
-                ]
-            ]
+                'defaults' => [
+                    'start' => 1,
+                    'direction' => 'forward',
+                    'count' => 10,
+                ],
+            ],
         ],
         [
             'name' => 'query::event',

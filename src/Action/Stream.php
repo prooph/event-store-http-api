@@ -40,7 +40,7 @@ class Stream
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $streamName = $request->getAttribute('streamname');
+        $streamName = urldecode($request->getAttribute('streamname'));
 
         $accepted = [
             'application/vnd.eventstore.atom+json',
@@ -53,19 +53,18 @@ class Stream
         }
 
         $start = $request->getAttribute('start');
-        if (0 === $start) { // @todo: make default values in routing ??
-            $start = 1;
-        }
         if ('head' === $start) {
             $start = PHP_INT_MAX;
         }
         $start = (int) $start;
 
         $count = (int) $request->getAttribute('count');
-        if (0 === $count) { // @todo: make default values in routing ??
-            $count = 10;
-        }
+
         $direction = $request->getAttribute('direction');
+
+        if (PHP_INT_MAX === $start && 'forward' === $direction) {
+            return new JsonResponse('', 404);
+        }
 
         if ($direction === 'backward') {
             $stream = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
@@ -74,7 +73,7 @@ class Stream
         }
 
         if (! $stream || ! $stream->streamEvents()->valid()) {
-            return new HtmlResponse('', 404);
+            return new JsonResponse('', 404);
         }
 
         $result = [];

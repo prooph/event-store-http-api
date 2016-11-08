@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
+use Interop\Container\ContainerInterface;
 use Zend\Expressive\Application;
 
 // Delegate static file requests back to the PHP built-in webserver
@@ -27,17 +28,9 @@ chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
 
-/** @var \Interop\Container\ContainerInterface $container */
+/* @var ContainerInterface $container */
 $container = require 'config/container.php';
 
-try {
-
-    /** @var \Zend\Expressive\Application $app */
-    $app = $container->get(Application::class);
-    $app->run();
-} catch (\Throwable $e) {
-    var_dump($e->getMessage());
-    while ($e = $e->getPrevious()) {
-        var_dump($e->getMessage());
-    }
-}
+/* @var Application $app */
+$app = $container->get(Application::class);
+$app->run();

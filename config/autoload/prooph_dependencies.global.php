@@ -25,7 +25,11 @@ return [
             // for pdo adapter
             'Prooph\\EventStore\\Adapter\\PDO\\PDOEventStoreAdapter' => 'Prooph\\EventStore\\Adapter\\PDO\\Container\\PDOEventStoreAdapterFactory',
             'Prooph\\EventStore\\Adapter\\PDO\\JsonQuerier\\MySQL' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\JsonQuerier\\Postgres' => InvokableFactory::class,
             'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\MySQLSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
             'Prooph\\EventStore\\Adapter\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
         ],
     ],
