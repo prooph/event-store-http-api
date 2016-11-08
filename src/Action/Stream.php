@@ -17,7 +17,6 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
 class Stream
@@ -63,7 +62,7 @@ class Stream
         $direction = $request->getAttribute('direction');
 
         if (PHP_INT_MAX === $start && 'forward' === $direction) {
-            return new JsonResponse('', 404);
+            return new JsonResponse('', 400);
         }
 
         if ($direction === 'backward') {
