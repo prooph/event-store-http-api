@@ -37,16 +37,5 @@ return [
                 ],
             ],
         ],
-        [
-            'name' => 'query::event',
-            'path' => '/streams/{streamname}/{version}',
-            'middleware' => Action\Event::class,
-            'allowed_methods' => ['GET'],
-            'options' => [
-                'tokens' => [
-                    'version' => '[0-9]+'
-                ],
-            ],
-        ],
     ],
 ];

@@ -75,10 +75,36 @@ class Stream
             return new JsonResponse('', 404);
         }
 
-        $result = [];
+        $uri = $request->getUri();
+        $id = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort() . '/streams/' . urlencode($streamName);
+
+        $entries = [];
         foreach ($stream->streamEvents() as $event) {
-            $result[] = $this->messageConverter->convertToArray($event);
+            $entries[] = $this->messageConverter->convertToArray($event);
         }
+
+        $result = [
+            'title' => "Event stream '$streamName'",
+            'id' => $id,
+            'streamName' => $streamName,
+            'metadata' => $stream->metadata(),
+            'links' => [
+                [
+                    'uri' => $id,
+                    'relation' => 'self',
+                ],
+                [
+                    'uri' => $id . '/head/backward/' . $count,
+                    'relation' => 'first'
+                ],
+                [
+                    'uri' => $id . '/1/forward/' . $count,
+                    'relation' => 'last'
+                ],
+            ],
+            'entries' => $entries,
+        ];
+
 
         return new JsonResponse($result);
     }
