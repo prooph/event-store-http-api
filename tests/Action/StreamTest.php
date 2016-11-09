@@ -14,7 +14,6 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Stream;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -37,7 +36,8 @@ class StreamTest extends TestCase
 
         $stream = new Stream($eventStore->reveal(), $messageConverter->reveal());
 
-        $response = $stream->__invoke($request->reveal(), $response->reveal(), function() {});
+        $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
+        });
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -66,7 +66,8 @@ class StreamTest extends TestCase
 
         $stream = new Stream($eventStore->reveal(), $messageConverter->reveal());
 
-        $response = $stream->__invoke($request->reveal(), $response->reveal(), function() {});
+        $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
+        });
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
