@@ -20,11 +20,6 @@ final class GenericEvent extends DomainMessage
 {
     use PayloadTrait;
 
-    public function version(): int
-    {
-        return $this->metadata()['_version'];
-    }
-
     public function messageType(): string
     {
         return Message::TYPE_EVENT;

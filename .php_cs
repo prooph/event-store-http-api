@@ -1,7 +1,8 @@
 <?php
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->in('config')
-    ->in('src');
+    ->in('src')
+    ->in('tests');
 $config = Symfony\CS\Config\Config::create();
 $config->level(null);
 $config->fixers(

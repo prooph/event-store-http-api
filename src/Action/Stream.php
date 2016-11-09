@@ -37,8 +37,11 @@ class Stream
         $this->messageConverter = $messageConverter;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
-    {
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next
+    ): ResponseInterface {
         $streamName = urldecode($request->getAttribute('streamname'));
 
         $accepted = [
