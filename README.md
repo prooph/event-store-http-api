@@ -1,7 +1,7 @@
 # Prooph EventStore HTTP API
 
 [![Build Status](https://travis-ci.org/prooph/event-store-http-api.svg?branch=master)](https://travis-ci.org/prooph/event-store-http-api)
-[![Coverage Status](https://coveralls.io/repos/prooph/event-store-http-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/prooph/event-store-http-api?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/prooph/event-store-http-api/badge.svg?branch=master)](https://coveralls.io/github/prooph/event-store-http-api?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/prooph/improoph)
 
 ## Overview
