@@ -71,6 +71,6 @@ class StreamTest extends TestCase
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('""', $response->getBody()->getContents());
+        $this->assertEmpty(json_decode($response->getBody()->getContents()));
     }
 }
