@@ -83,7 +83,9 @@ class Load
 
         $entries = [];
         foreach ($stream->streamEvents() as $event) {
-            $entries[] = $this->messageConverter->convertToArray($event);
+            $entry = $this->messageConverter->convertToArray($event);
+            $entry['created_at'] = $entry['created_at']->format('Y-m-d\TH:i:s.u');
+            $entries[] = $entry;
         }
 
         $result = [
