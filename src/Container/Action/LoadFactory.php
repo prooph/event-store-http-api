@@ -15,12 +15,12 @@ namespace Prooph\EventStore\Http\Api\Container\Action;
 use Interop\Container\ContainerInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Stream;
+use Prooph\EventStore\Http\Api\Action\Load;
 
-final class StreamFactory
+final class LoadFactory
 {
-    public function __invoke(ContainerInterface $container): Stream
+    public function __invoke(ContainerInterface $container): Load
     {
-        return new Stream($container->get(EventStore::class), $container->get(MessageConverter::class));
+        return new Load($container->get(EventStore::class), $container->get(MessageConverter::class));
     }
 }

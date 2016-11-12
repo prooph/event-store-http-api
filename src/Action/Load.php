@@ -14,12 +14,12 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Stream\StreamName;
+use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class Stream
+class Load
 {
     /**
      * @var EventStore

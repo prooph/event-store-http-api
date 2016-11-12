@@ -27,7 +27,7 @@ return [
         [
             'name' => 'query-stream',
             'path' => '/streams/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
-            'middleware' => Action\Stream::class,
+            'middleware' => Action\Load::class,
             'allowed_methods' => ['GET'],
             'options' => [
                 'defaults' => [

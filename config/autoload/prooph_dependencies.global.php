@@ -20,17 +20,15 @@ return [
             \Prooph\Common\Messaging\MessageConverter::class => \Prooph\Common\Messaging\NoOpMessageConverter::class,
         ],
         'factories' => [
+            GenericEventFactory::class => InvokableFactory::class,
             \Prooph\Common\Messaging\FQCNMessageFactory::class => InvokableFactory::class,
             \Prooph\Common\Messaging\NoOpMessageConverter::class => InvokableFactory::class,
             // for pdo adapter
-            'Prooph\\EventStore\\Adapter\\PDO\\PDOEventStoreAdapter' => 'Prooph\\EventStore\\Adapter\\PDO\\Container\\PDOEventStoreAdapterFactory',
-            'Prooph\\EventStore\\Adapter\\PDO\\JsonQuerier\\MySQL' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\JsonQuerier\\Postgres' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\MySQLSingleStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\IndexingStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\Adapter\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
         ],
     ],
 ];

@@ -14,10 +14,10 @@ use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Stream;
-use Prooph\EventStore\Http\Api\Container\Action\StreamFactory;
+use Prooph\EventStore\Http\Api\Action\Load;
+use Prooph\EventStore\Http\Api\Container\Action\LoadFactory;
 
-class StreamFactoryTest extends TestCase
+class LoadFactoryTest extends TestCase
 {
     /**
      * @test
@@ -31,9 +31,9 @@ class StreamFactoryTest extends TestCase
         $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
         $container->get(MessageConverter::class)->willReturn($messageConverter->reveal())->shouldBeCalled();
 
-        $factory = new StreamFactory();
+        $factory = new LoadFactory();
         $stream = $factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(Stream::class, $stream);
+        $this->assertInstanceOf(Load::class, $stream);
     }
 }

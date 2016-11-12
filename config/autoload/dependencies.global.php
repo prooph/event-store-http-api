@@ -29,7 +29,7 @@ return [
             EventStore::class => EventStoreFactory::class,
             GenericEventFactory::class => InvokableFactory::class,
             // actions
-            Action\Stream::class => Container\Action\StreamFactory::class,
+            Action\Load::class => Container\Action\LoadFactory::class,
         ],
     ],
 ];

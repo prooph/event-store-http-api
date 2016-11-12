@@ -26,7 +26,7 @@ open your database console and create a database
 
 3)
 
-create your event streams table, see: https://github.com/prooph/event-store-pdo-adapter/tree/master/scripts
+create your event streams table, see: https://github.com/prooph/pdo-event-store/tree/master/scripts
 
 4)
 

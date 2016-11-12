@@ -13,12 +13,12 @@ namespace ProophTest\EventStore\Http\Api\Action;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Stream;
+use Prooph\EventStore\Http\Api\Action\Load;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class StreamTest extends TestCase
+class LoadTest extends TestCase
 {
     /**
      * @test
@@ -34,7 +34,7 @@ class StreamTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class);
 
-        $stream = new Stream($eventStore->reveal(), $messageConverter->reveal());
+        $stream = new Load($eventStore->reveal(), $messageConverter->reveal());
 
         $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
         });
@@ -64,7 +64,7 @@ class StreamTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class);
 
-        $stream = new Stream($eventStore->reveal(), $messageConverter->reveal());
+        $stream = new Load($eventStore->reveal(), $messageConverter->reveal());
 
         $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
         });

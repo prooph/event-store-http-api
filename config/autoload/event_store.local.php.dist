@@ -12,29 +12,36 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
-use Prooph\EventStore\Adapter\PDO\IndexingStrategy\MySQLAggregateStreamStrategy;
-use Prooph\EventStore\Adapter\PDO\JsonQuerier\MySQL;
-use Prooph\EventStore\Adapter\PDO\PDOEventStoreAdapter;
+use Prooph\EventStore\PDO\IndexingStrategy\MySQLAggregateStreamStrategy;
+use Prooph\EventStore\PDO\IndexingStrategy\MySQLSingleStreamStrategy;
+use Prooph\EventStore\PDO\IndexingStrategy\PostgresAggregateStreamStrategy;
+use Prooph\EventStore\PDO\IndexingStrategy\PostgresSingleStreamStrategy;
 
 return [
+    'dependencies' => [
+        'factories' => [
+            // choose one !!!
+            //EventStore::class => 'Prooph\\EventStore\\PDO\\Container\\MySQLEventStoreFactory',
+            //EventStore::class => 'Prooph\\EventStore\\PDO\\Container\\PostgresEventStoreFactory',
+        ],
+    ],
     'prooph' => [
         'event_store' => [
             'default' => [
-                'adapter' => [
-                    'type' => PDOEventStoreAdapter::class,
-                    'options' => [
-                        'connection_options' => [
-                            'driver' => 'pdo_mysql',
-                            'user' => 'root',
-                            'password' => 'root',
-                            'host' => '127.0.0.1',
-                            'dbname' => 'event_store_http_api',
-                            'port' => 3306,
-                        ],
-                        'json_querier' => MySQL::class,
-                        'indexing_strategy' => MySQLAggregateStreamStrategy::class,
-                    ],
+                'connection_options' => [
+                    'driver' => 'pdo_mysql',
+                    'user' => 'root',
+                    'password' => '',
+                    'host' => '127.0.0.1',
+                    'dbname' => 'event_store_http_api',
+                    'port' => 3306,
                 ],
+                'message_factory' => GenericEvent:class,
+                // choose one !!!
+                //'indexing_strategy' => MySQLAggregateStreamStrategy::class,
+                //'indexing_strategy' => MySQLSingleStreamStrategy::class,
+                //'indexing_strategy' => PostgresAggregateStreamStrategy::class,
+                //'indexing_strategy' => PostgresSingleStreamStrategy::class,
             ],
         ],
     ],
