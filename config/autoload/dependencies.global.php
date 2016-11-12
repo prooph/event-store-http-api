@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api;
 
 use Prooph\Common\Messaging\MessageFactory;
-use Prooph\EventStore\Container\EventStoreFactory;
-use Prooph\EventStore\EventStore;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -22,14 +20,24 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 return [
     'dependencies' => [
         'aliases' => [
-            MessageFactory::class => GenericEventFactory::class,
+            \Prooph\Common\Messaging\MessageConverter::class => \Prooph\Common\Messaging\NoOpMessageConverter::class,
         ],
         'factories' => [
+            // app
             Application::class => ApplicationFactory::class,
-            EventStore::class => EventStoreFactory::class,
             GenericEventFactory::class => InvokableFactory::class,
             // actions
             Action\Load::class => Container\Action\LoadFactory::class,
+            Action\Post::class => Container\Action\PostFactory::class,
+            // prooph
+            \Prooph\Common\Messaging\FQCNMessageFactory::class => InvokableFactory::class,
+            \Prooph\Common\Messaging\NoOpMessageConverter::class => InvokableFactory::class,
+            // for pdo adapter
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
         ],
     ],
 ];

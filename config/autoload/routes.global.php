@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
+use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 use Zend\Expressive\Router;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'dependencies' => [
@@ -20,7 +22,8 @@ return [
             Router\RouterInterface::class => Router\FastRouteRouter::class,
         ],
         'factories' => [
-            Router\FastRouteRouter::class => \Zend\ServiceManager\Factory\InvokableFactory::class,
+            Router\FastRouteRouter::class => InvokableFactory::class,
+            BodyParamsMiddleware::class => InvokableFactory::class,
         ]
     ],
     'routes' => [
@@ -36,6 +39,15 @@ return [
                     'count' => 10,
                 ],
             ],
+        ],
+        [
+            'name' => 'post-stream',
+            'path' => '/streams/{streamname}',
+            'middleware' => [
+                BodyParamsMiddleware::class,
+                Action\Post::class,
+            ],
+            'allowed_methods' => ['POST'],
         ],
     ],
 ];

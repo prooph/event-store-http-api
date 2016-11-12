@@ -111,7 +111,7 @@ class Load
         ];
 
 
-        return new JsonResponse($result);
+        return $next($request, new JsonResponse($result));
     }
 
     private function returnDescription(string $streamName): JsonResponse
