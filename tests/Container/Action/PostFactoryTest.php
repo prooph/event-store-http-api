@@ -12,28 +12,29 @@ namespace ProophTest\EventStore\Http\Api\Container\Action;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Prooph\Common\Messaging\MessageConverter;
+use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Load;
-use Prooph\EventStore\Http\Api\Container\Action\LoadFactory;
+use Prooph\EventStore\Http\Api\Action\Post;
+use Prooph\EventStore\Http\Api\Container\Action\PostFactory;
+use Prooph\EventStore\Http\Api\GenericEventFactory;
 
-class LoadFactoryTest extends TestCase
+class PostFactoryTest extends TestCase
 {
     /**
      * @test
      */
-    public function it_creates_new_load_action(): void
+    public function it_creates_new_post_action(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $messageConverter = $this->prophesize(MessageConverter::class);
+        $messageFactory = $this->prophesize(MessageFactory::class);
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
-        $container->get(MessageConverter::class)->willReturn($messageConverter->reveal())->shouldBeCalled();
+        $container->get(GenericEventFactory::class)->willReturn($messageFactory->reveal())->shouldBeCalled();
 
-        $factory = new LoadFactory();
+        $factory = new PostFactory();
         $stream = $factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(Load::class, $stream);
+        $this->assertInstanceOf(Post::class, $stream);
     }
 }
