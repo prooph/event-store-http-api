@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
-use Prooph\Common\Messaging\MessageFactory;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;

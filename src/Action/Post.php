@@ -10,7 +10,6 @@
 
 namespace Prooph\EventStore\Http\Api\Action;
 
-use ArrayIterator;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\CanControlTransaction;
 use Prooph\EventStore\EventStore;
@@ -59,7 +58,7 @@ class Post
 
             try {
                 $events[] = $this->messageFactory->createMessageFromArray($event['message_name'], $event);
-            } catch ( \Throwable $e) {
+            } catch (\Throwable $e) {
                 return $response->withStatus(400, $e->getMessage());
             }
         }
