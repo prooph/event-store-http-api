@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -31,10 +32,27 @@ class Load
      */
     private $messageConverter;
 
+    /**
+     * @var array
+     */
+    private $transformers;
+
     public function __construct(EventStore $eventStore, MessageConverter $messageConverter)
     {
         $this->eventStore = $eventStore;
         $this->messageConverter = $messageConverter;
+        $this->transformers = [];
+    }
+
+    /**
+     * @param Transformer $transformer
+     * @param \string[] ...$names
+     */
+    public function addTransformer(Transformer $transformer, string ...$names)
+    {
+        foreach ($names as $name) {
+            $this->transformers[$name] = $transformer;
+        }
     }
 
     public function __invoke(
@@ -44,15 +62,11 @@ class Load
     ): ResponseInterface {
         $streamName = urldecode($request->getAttribute('streamname'));
 
-        $accepted = [
-            'application/vnd.eventstore.atom+json',
-            'application/atom+json',
-            'application/json'
-        ];
-
-        if (! in_array($request->getHeaderLine('Accept'), $accepted, true)) {
+        if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
             return $this->returnDescription($streamName);
         }
+
+        $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
         $start = $request->getAttribute('start');
         if ('head' === $start) {
@@ -65,7 +79,7 @@ class Load
         $direction = $request->getAttribute('direction');
 
         if (PHP_INT_MAX === $start && 'forward' === $direction) {
-            return new JsonResponse('', 400);
+            return $transformer->error('', 400);
         }
 
         if ($direction === 'backward') {
@@ -75,7 +89,7 @@ class Load
         }
 
         if (! $stream || ! $stream->streamEvents()->valid()) {
-            return new JsonResponse('', 404);
+            return $transformer->error('', 404);
         }
 
         $uri = $request->getUri();
@@ -110,8 +124,7 @@ class Load
             'entries' => $entries,
         ];
 
-
-        return $next($request, new JsonResponse($result));
+        return $next($request, $transformer->stream($result));
     }
 
     private function returnDescription(string $streamName): JsonResponse
@@ -129,9 +142,7 @@ class Load
                     ],
                     'stream' => [
                         'href' => '/streams/' . $streamName,
-                        'supportedContentTypes' => [
-                            'application/vnd.eventstore.atom+json'
-                        ],
+                        'supportedContentTypes' => array_keys($this->transformers),
                     ],
                 ],
             ],
