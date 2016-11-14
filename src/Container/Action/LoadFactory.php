@@ -16,11 +16,21 @@ use Interop\Container\ContainerInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
+use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 
 final class LoadFactory
 {
     public function __invoke(ContainerInterface $container): Load
     {
-        return new Load($container->get(EventStore::class), $container->get(MessageConverter::class));
+        $actionHandler = new Load($container->get(EventStore::class), $container->get(MessageConverter::class));
+
+        $actionHandler->addTransformer(
+            new JsonTransformer(),
+            'application/vnd.eventstore.atom+json',
+            'application/atom+json',
+            'application/json'
+        );
+
+        return $actionHandler;
     }
 }
