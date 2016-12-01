@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of the prooph/event-store-http-api.
  * (c) 2016-2016 prooph software GmbH <contact@prooph.de>
@@ -32,7 +34,7 @@ final class TransformerStub implements Transformer
      * @param array $result
      * @return ResponseInterface
      */
-    public function stream(array $result) : ResponseInterface
+    public function stream(array $result): ResponseInterface
     {
         return $this->result;
     }
@@ -42,7 +44,7 @@ final class TransformerStub implements Transformer
      * @param int $code
      * @return ResponseInterface
      */
-    public function error(string $message, int $code) : ResponseInterface
+    public function error(string $message, int $code): ResponseInterface
     {
         return $this->result;
     }
