@@ -16,8 +16,8 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 class Load
@@ -114,11 +114,11 @@ class Load
                 ],
                 [
                     'uri' => $id . '/head/backward/' . $count,
-                    'relation' => 'first'
+                    'relation' => 'first',
                 ],
                 [
                     'uri' => $id . '/1/forward/' . $count,
-                    'relation' => 'last'
+                    'relation' => 'last',
                 ],
             ],
             'entries' => $entries,
@@ -137,7 +137,7 @@ class Load
                     'self' => [
                         'href' => '/streams/' . $streamName,
                         'supportedContentTypes' => [
-                            'application/vnd.eventstore.streamdesc+json'
+                            'application/vnd.eventstore.streamdesc+json',
                         ],
                     ],
                     'stream' => [

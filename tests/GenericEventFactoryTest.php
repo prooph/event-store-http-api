@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace ProophTest\EventStore\Http\Api;
 
 use PHPUnit_Framework_TestCase as TestCase;
@@ -34,7 +36,6 @@ class GenericEventFactoryTest extends TestCase
     {
         $uuid = Uuid::uuid4();
         $createdAt = new \DateTimeImmutable();
-
 
         $event = $this->messageFactory->createMessageFromArray('happened', [
             'uuid' => $uuid->toString(),

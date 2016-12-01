@@ -24,7 +24,7 @@ return [
         'factories' => [
             Router\FastRouteRouter::class => InvokableFactory::class,
             BodyParamsMiddleware::class => InvokableFactory::class,
-        ]
+        ],
     ],
     'routes' => [
         [
