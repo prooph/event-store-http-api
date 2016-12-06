@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\Http\Api\GenericEventFactory;
 use Ramsey\Uuid\Uuid;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Http\Api\Container\Action;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Post;
