@@ -83,12 +83,12 @@ class Load
         }
 
         if ($direction === 'backward') {
-            $stream = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
+            $streamEvents = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
         } else {
-            $stream = $this->eventStore->load(new StreamName($streamName), $start, $count);
+            $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count);
         }
 
-        if (! $stream || ! $stream->streamEvents()->valid()) {
+        if (! $streamEvents->valid()) {
             return $transformer->error('', 404);
         }
 
@@ -96,7 +96,7 @@ class Load
         $id = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort() . '/streams/' . urlencode($streamName);
 
         $entries = [];
-        foreach ($stream->streamEvents() as $event) {
+        foreach ($streamEvents as $event) {
             $entry = $this->messageConverter->convertToArray($event);
             $entry['created_at'] = $entry['created_at']->format('Y-m-d\TH:i:s.u');
             $entries[] = $entry;
@@ -106,7 +106,6 @@ class Load
             'title' => "Event stream '$streamName'",
             'id' => $id,
             'streamName' => $streamName,
-            'metadata' => $stream->metadata(),
             'links' => [
                 [
                     'uri' => $id,
