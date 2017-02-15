@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Container\Action;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\Container\Action\LoadFactory;
+use Psr\Container\ContainerInterface;
 
 class LoadFactoryTest extends TestCase
 {

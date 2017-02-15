@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Container\Action;
 
-use Interop\Container\ContainerInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
+use Psr\Container\ContainerInterface;
 
 final class LoadFactory
 {
