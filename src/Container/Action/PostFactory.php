@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Container\Action;
 
-use Interop\Container\ContainerInterface;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Post;
 use Prooph\EventStore\Http\Api\GenericEventFactory;
+use Psr\Container\ContainerInterface;
 
 final class PostFactory
 {

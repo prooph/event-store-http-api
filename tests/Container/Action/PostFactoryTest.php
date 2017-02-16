@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Container\Action;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Post;
 use Prooph\EventStore\Http\Api\Container\Action\PostFactory;
 use Prooph\EventStore\Http\Api\GenericEventFactory;
+use Psr\Container\ContainerInterface;
 
 class PostFactoryTest extends TestCase
 {
