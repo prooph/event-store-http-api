@@ -62,13 +62,23 @@ class Post implements MiddlewareInterface
             if (! isset($event['created_at'])) {
                 $event['created_at'] = new DateTimeImmutable('now', new DateTimeZone('UTC'));
             } else {
-                $event['created_at'] = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $event['created_at'], new DateTimeZone('UTC'));
+                $event['created_at'] = DateTimeImmutable::createFromFormat(
+                    'Y-m-d\TH:i:s.u',
+                    $event['created_at'],
+                    new DateTimeZone('UTC')
+                );
+            }
+
+            if (! $event['created_at'] instanceof DateTimeImmutable) {
+                $response = new JsonResponse('');
+                return $response->withStatus(400, 'Invalid created_at format, expected Y-m-d\TH:i:s.u');
             }
 
             try {
                 $events[] = $this->messageFactory->createMessageFromArray($event['message_name'], $event);
             } catch (Throwable $e) {
-                return new JsonResponse('', 400);
+                $response = new JsonResponse('');
+                return $response->withStatus(400, $e->getMessage());
             }
         }
 
@@ -89,7 +99,8 @@ class Post implements MiddlewareInterface
                 $this->eventStore->rollback();
             }
 
-            return new JsonResponse('', 500);
+            $response = new JsonResponse('');
+            return $response->withStatus(500, 'Cannot create or append to stream');
         }
 
         if ($this->eventStore instanceof TransactionalEventStore) {

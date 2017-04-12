@@ -35,7 +35,7 @@ class Load implements MiddlewareInterface
     private $messageConverter;
 
     /**
-     * @var array
+     * @var Transformer[]
      */
     private $transformers = [];
 
