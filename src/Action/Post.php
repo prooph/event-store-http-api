@@ -71,6 +71,7 @@ class Post implements MiddlewareInterface
 
             if (! $event['created_at'] instanceof DateTimeImmutable) {
                 $response = new JsonResponse('');
+
                 return $response->withStatus(400, 'Invalid created_at format, expected Y-m-d\TH:i:s.u');
             }
 
@@ -78,6 +79,7 @@ class Post implements MiddlewareInterface
                 $events[] = $this->messageFactory->createMessageFromArray($event['message_name'], $event);
             } catch (Throwable $e) {
                 $response = new JsonResponse('');
+
                 return $response->withStatus(400, $e->getMessage());
             }
         }
@@ -100,6 +102,7 @@ class Post implements MiddlewareInterface
             }
 
             $response = new JsonResponse('');
+
             return $response->withStatus(500, 'Cannot create or append to stream');
         }
 
