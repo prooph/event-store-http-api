@@ -21,6 +21,7 @@ use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Expressive\Helper\UrlHelper;
 
 class Load implements MiddlewareInterface
 {
@@ -39,10 +40,16 @@ class Load implements MiddlewareInterface
      */
     private $transformers = [];
 
-    public function __construct(EventStore $eventStore, MessageConverter $messageConverter)
+    /**
+     * @var UrlHelper
+     */
+    private $urlHelper;
+
+    public function __construct(EventStore $eventStore, MessageConverter $messageConverter, UrlHelper $urlHelper)
     {
         $this->eventStore = $eventStore;
         $this->messageConverter = $messageConverter;
+        $this->urlHelper = $urlHelper;
     }
 
     public function addTransformer(Transformer $transformer, string ...$names)
@@ -57,7 +64,7 @@ class Load implements MiddlewareInterface
         $streamName = urldecode($request->getAttribute('streamname'));
 
         if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
-            return $this->returnDescription($streamName);
+            return $this->returnDescription($request, $streamName);
         }
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
@@ -88,9 +95,6 @@ class Load implements MiddlewareInterface
             return $transformer->error('', 404);
         }
 
-        $uri = $request->getUri();
-        $id = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort() . '/streams/' . urlencode($streamName);
-
         $entries = [];
 
         foreach ($streamEvents as $event) {
@@ -98,6 +102,12 @@ class Load implements MiddlewareInterface
             $entry['created_at'] = $entry['created_at']->format('Y-m-d\TH:i:s.u');
             $entries[] = $entry;
         }
+
+        $host = $this->host($request);
+
+        $id = $host . $this->urlHelper->generate('page::query-stream', [
+            'streamname' => urlencode($streamName),
+        ]);
 
         $result = [
             'title' => "Event stream '$streamName'",
@@ -109,11 +119,21 @@ class Load implements MiddlewareInterface
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => $id . '/head/backward/' . $count,
+                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                        'streamname' => urlencode($streamName),
+                        'start' => 'head',
+                        'direction' => 'backward',
+                        'count' => $count,
+                    ]),
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => $id . '/1/forward/' . $count,
+                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                        'streamname' => urlencode($streamName),
+                        'start' => '1',
+                        'direction' => 'forward',
+                        'count' => $count,
+                    ]),
                     'relation' => 'last',
                 ],
             ],
@@ -123,21 +143,25 @@ class Load implements MiddlewareInterface
         return $transformer->stream($result);
     }
 
-    private function returnDescription(string $streamName): JsonResponse
+    private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse
     {
+        $id = $this->host($request) . $this->urlHelper->generate('page::query-stream', [
+            'streamname' => urlencode($streamName),
+        ]);
+
         return new JsonResponse(
             [
                 'title' => 'Description document for \'' . $streamName . '\'',
                 'description' => 'The description document will be presented when no accept header is present or it was requested',
                 '_links' => [
                     'self' => [
-                        'href' => '/streams/' . $streamName,
+                        'href' => $id,
                         'supportedContentTypes' => [
                             'application/vnd.eventstore.streamdesc+json',
                         ],
                     ],
                     'stream' => [
-                        'href' => '/streams/' . $streamName,
+                        'href' => $id,
                         'supportedContentTypes' => array_keys($this->transformers),
                     ],
                 ],
@@ -147,5 +171,17 @@ class Load implements MiddlewareInterface
                 'Content-Type' => 'application/vnd.eventstore.streamdesc+json; charset=utf-8',
             ]
         );
+    }
+
+    private function host(ServerRequestInterface $request): string
+    {
+        $uri = $request->getUri();
+        $host = $uri->getScheme() . '://' . $uri->getHost();
+
+        if (null !== $uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+
+        return $host;
     }
 }

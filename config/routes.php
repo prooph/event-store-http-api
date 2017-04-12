@@ -31,6 +31,9 @@ $app->get(
 
 $app->post(
     '/streams/{streamname}',
-    \Prooph\EventStore\Http\Api\Action\Post::class,
+    [
+        \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
+        \Prooph\EventStore\Http\Api\Action\Post::class,
+    ],
     'page::post-stream'
 );
