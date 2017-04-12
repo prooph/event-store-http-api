@@ -10,6 +10,13 @@
 
 declare(strict_types=1);
 
+use Zend\ConfigAggregator\ConfigAggregator;
+
 return [
-    'config_cache_enabled' => false,
+    'debug' => false,
+    ConfigAggregator::ENABLE_CACHE => true,
+    'zend-expressive' => [
+        'programmatic_pipeline' => true,
+        'raise_throwables' => true,
+    ],
 ];

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Action;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
@@ -20,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class Load
+class Load implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -35,19 +37,14 @@ class Load
     /**
      * @var array
      */
-    private $transformers;
+    private $transformers = [];
 
     public function __construct(EventStore $eventStore, MessageConverter $messageConverter)
     {
         $this->eventStore = $eventStore;
         $this->messageConverter = $messageConverter;
-        $this->transformers = [];
     }
 
-    /**
-     * @param Transformer $transformer
-     * @param \string[] ...$names
-     */
     public function addTransformer(Transformer $transformer, string ...$names)
     {
         foreach ($names as $name) {
@@ -55,11 +52,8 @@ class Load
         }
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ): ResponseInterface {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    {
         $streamName = urldecode($request->getAttribute('streamname'));
 
         if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
@@ -69,9 +63,11 @@ class Load
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
         $start = $request->getAttribute('start');
+
         if ('head' === $start) {
             $start = PHP_INT_MAX;
         }
+
         $start = (int) $start;
 
         $count = (int) $request->getAttribute('count');
@@ -96,6 +92,7 @@ class Load
         $id = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort() . '/streams/' . urlencode($streamName);
 
         $entries = [];
+
         foreach ($streamEvents as $event) {
             $entry = $this->messageConverter->convertToArray($event);
             $entry['created_at'] = $entry['created_at']->format('Y-m-d\TH:i:s.u');
@@ -123,7 +120,7 @@ class Load
             'entries' => $entries,
         ];
 
-        return $next($request, $transformer->stream($result));
+        return $transformer->stream($result);
     }
 
     private function returnDescription(string $streamName): JsonResponse

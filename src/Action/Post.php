@@ -12,16 +12,22 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Action;
 
+use ArrayIterator;
+use DateTimeImmutable;
+use DateTimeZone;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\Common\Messaging\MessageFactory;
-use Prooph\EventStore\CanControlTransaction;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalEventStore;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Zend\Diactoros\Response\JsonResponse;
 
-class Post
+class Post implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -39,11 +45,8 @@ class Post
         $this->messageFactory = $messageFactory;
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ): ResponseInterface {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    {
         if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
             return new JsonResponse('', 415);
         }
@@ -52,45 +55,47 @@ class Post
         $events = [];
 
         foreach ($readEvents as $event) {
-            if (! is_array($event)
-                || ! isset($event['message_name'])
-            ) {
-                return $response->withStatus(400);
+            if (! is_array($event) || ! isset($event['message_name'])) {
+                return new JsonResponse('', 500);
+            }
+
+            if (! isset($event['created_at'])) {
+                $event['created_at'] = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+            } else {
+                $event['created_at'] = DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.u', $event['created_at'], new DateTimeZone('UTC'));
             }
 
             try {
                 $events[] = $this->messageFactory->createMessageFromArray($event['message_name'], $event);
-            } catch (\Throwable $e) {
-                return $response->withStatus(400, $e->getMessage());
+            } catch (Throwable $e) {
+                return new JsonResponse('', 400);
             }
         }
 
         $streamName = new StreamName(urldecode($request->getAttribute('streamname')));
 
-        $appendToStream = $this->eventStore->hasStream($streamName);
-
-        if ($this->eventStore instanceof CanControlTransaction) {
+        if ($this->eventStore instanceof TransactionalEventStore) {
             $this->eventStore->beginTransaction();
         }
 
         try {
-            if ($appendToStream) {
-                $this->eventStore->appendTo($streamName, new \ArrayIterator($events));
+            if ($this->eventStore->hasStream($streamName)) {
+                $this->eventStore->appendTo($streamName, new ArrayIterator($events));
             } else {
-                $this->eventStore->create(new Stream($streamName, new \ArrayIterator($events)));
+                $this->eventStore->create(new Stream($streamName, new ArrayIterator($events)));
             }
-        } catch (\Throwable $e) {
-            if ($this->eventStore instanceof CanControlTransaction) {
+        } catch (Throwable $e) {
+            if ($this->eventStore instanceof TransactionalEventStore) {
                 $this->eventStore->rollback();
             }
 
-            return $response->withStatus(500, 'Cannot create or append to stream');
+            return new JsonResponse('', 500);
         }
 
-        if ($this->eventStore instanceof CanControlTransaction) {
+        if ($this->eventStore instanceof TransactionalEventStore) {
             $this->eventStore->commit();
         }
 
-        return $response->withStatus(201, 'Created');
+        return new JsonResponse('', 201);
     }
 }
