@@ -12,36 +12,42 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
-use Prooph\EventStore\PDO\IndexingStrategy\MySQLAggregateStreamStrategy;
-use Prooph\EventStore\PDO\IndexingStrategy\MySQLSingleStreamStrategy;
-use Prooph\EventStore\PDO\IndexingStrategy\PostgresAggregateStreamStrategy;
-use Prooph\EventStore\PDO\IndexingStrategy\PostgresSingleStreamStrategy;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Pdo\Container\MySqlEventStoreFactory;
+use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
+use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
+use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlSingleStreamStrategy;
+use Prooph\EventStore\Pdo\PersistenceStrategy\PostgresAggregateStreamStrategy;
+use Prooph\EventStore\Pdo\PersistenceStrategy\PostgresSingleStreamStrategy;
 
 return [
     'dependencies' => [
         'factories' => [
             // choose one !!!
-            //EventStore::class => 'Prooph\\EventStore\\PDO\\Container\\MySQLEventStoreFactory',
-            //EventStore::class => 'Prooph\\EventStore\\PDO\\Container\\PostgresEventStoreFactory',
+            //EventStore::class => MySqlEventStoreFactory::class,
+            //EventStore::class => PostgresEventStoreFactory::class,
         ],
     ],
     'prooph' => [
         'event_store' => [
             'default' => [
-                'connection_options' => [
-                    'driver' => 'pdo_mysql',
-                    'user' => 'root',
-                    'password' => '',
-                    'host' => '127.0.0.1',
-                    'dbname' => 'event_store_http_api',
-                    'port' => 3306,
-                ],
-                'message_factory' => GenericEvent:class,
+                'connection' => 'pdo_connection'
+                'message_factory' => GenericEventFactory::class,
                 // choose one !!!
-                //'indexing_strategy' => MySQLAggregateStreamStrategy::class,
-                //'indexing_strategy' => MySQLSingleStreamStrategy::class,
-                //'indexing_strategy' => PostgresAggregateStreamStrategy::class,
-                //'indexing_strategy' => PostgresSingleStreamStrategy::class,
+                //'persistence_strategy' => MySqlAggregateStreamStrategy::class,
+                //'persistence_strategy' => MySqlSingleStreamStrategy::class,
+                //'persistence_strategy' => PostgresAggregateStreamStrategy::class,
+                //'persistence_strategy' => PostgresSingleStreamStrategy::class,
+            ],
+        ],
+        'pdo_connection' => [
+            'default' => [
+                'schema' => 'mysql', // or 'pgsql'
+                'user' => 'root',
+                'password' => '',
+                'host' => '127.0.0.1',
+                'dbname' => 'event_store_http_api',
+                'port' => 3306, // or 5432
             ],
         ],
     ],

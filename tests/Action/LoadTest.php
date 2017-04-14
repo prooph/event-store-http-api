@@ -12,15 +12,17 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Action;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Uri;
+use Zend\Expressive\Helper\UrlHelper;
 
 class LoadTest extends TestCase
 {
@@ -35,14 +37,16 @@ class LoadTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('')->shouldBeCalled();
         $request->getAttribute('streamname')->willReturn('foo\bar')->shouldBeCalled();
+        $request->getUri()->willReturn(new Uri())->shouldBeCalled();
 
-        $response = $this->prophesize(ResponseInterface::class);
+        $urlHelper = $this->prophesize(UrlHelper::class);
 
-        $stream = new Load($eventStore->reveal(), $messageConverter->reveal());
-        $stream->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
+        $delegate = $this->prophesize(DelegateInterface::class);
 
-        $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
-        });
+        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
+
+        $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
@@ -67,13 +71,14 @@ class LoadTest extends TestCase
         $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('1')->shouldBeCalled();
 
-        $response = $this->prophesize(ResponseInterface::class);
+        $urlHelper = $this->prophesize(UrlHelper::class);
 
-        $stream = new Load($eventStore->reveal(), $messageConverter->reveal());
-        $stream->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
+        $delegate = $this->prophesize(DelegateInterface::class);
 
-        $response = $stream->__invoke($request->reveal(), $response->reveal(), function () {
-        });
+        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
+
+        $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
@@ -94,9 +99,11 @@ class LoadTest extends TestCase
         $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('1')->shouldBeCalled();
 
-        $response = $this->prophesize(ResponseInterface::class);
+        $urlHelper = $this->prophesize(UrlHelper::class);
 
-        $stream = new Load($eventStore->reveal(), $messageConverter->reveal());
+        $delegate = $this->prophesize(DelegateInterface::class);
+
+        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
 
         $expectedResponses = [
             'application/vnd.eventstore.atom+json' => new JsonResponse(['transformer-1']),
@@ -105,14 +112,13 @@ class LoadTest extends TestCase
 
         // Add all transformers to Load action.
         foreach ($expectedResponses as $forAcceptedValue => $expectedResponse) {
-            $stream->addTransformer(new TransformerStub($expectedResponse), $forAcceptedValue);
+            $action->addTransformer(new TransformerStub($expectedResponse), $forAcceptedValue);
         }
 
         foreach ($expectedResponses as $forAcceptedValue => $expectedResponse) {
             $request->getHeaderLine('Accept')->willReturn($forAcceptedValue);
 
-            $finalResponse = $stream->__invoke($request->reveal(), $response->reveal(), function () {
-            });
+            $finalResponse = $action->process($request->reveal(), $delegate->reveal());
 
             $this->assertSame($expectedResponse, $finalResponse);
         }

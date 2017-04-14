@@ -18,6 +18,7 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\Container\Action\LoadFactory;
 use Psr\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
 
 class LoadFactoryTest extends TestCase
 {
@@ -28,10 +29,12 @@ class LoadFactoryTest extends TestCase
     {
         $eventStore = $this->prophesize(EventStore::class);
         $messageConverter = $this->prophesize(MessageConverter::class);
+        $urlHelper = $this->prophesize(UrlHelper::class);
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
         $container->get(MessageConverter::class)->willReturn($messageConverter->reveal())->shouldBeCalled();
+        $container->get(UrlHelper::class)->willReturn($urlHelper->reveal())->shouldBeCalled();
 
         $factory = new LoadFactory();
         $stream = $factory->__invoke($container->reveal());

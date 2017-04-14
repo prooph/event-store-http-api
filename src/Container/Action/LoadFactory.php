@@ -17,12 +17,17 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Psr\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
 
 final class LoadFactory
 {
     public function __invoke(ContainerInterface $container): Load
     {
-        $actionHandler = new Load($container->get(EventStore::class), $container->get(MessageConverter::class));
+        $actionHandler = new Load(
+            $container->get(EventStore::class),
+            $container->get(MessageConverter::class),
+            $container->get(UrlHelper::class)
+        );
 
         $actionHandler->addTransformer(
             new JsonTransformer(),

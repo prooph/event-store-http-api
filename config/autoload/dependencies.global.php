@@ -12,31 +12,57 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
+use Prooph\Common\Messaging\FQCNMessageFactory;
+use Prooph\Common\Messaging\MessageConverter;
+use Prooph\Common\Messaging\NoOpMessageConverter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\Container\ErrorHandlerFactory;
+use Zend\Expressive\Container\ErrorResponseGeneratorFactory;
+use Zend\Expressive\Container\NotFoundDelegateFactory;
+use Zend\Expressive\Container\NotFoundHandlerFactory;
+use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Helper\UrlHelper;
+use Zend\Expressive\Helper\UrlHelperFactory;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddlewareFactory;
+use Zend\Expressive\Middleware\ErrorResponseGenerator;
+use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Expressive\Router\FastRouteRouterFactory;
+use Zend\Expressive\Router\RouterInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use Zend\Stratigility\Middleware\ErrorHandler;
+use Zend\Stratigility\Middleware\OriginalMessages;
 
 return [
     'dependencies' => [
         'aliases' => [
-            \Prooph\Common\Messaging\MessageConverter::class => \Prooph\Common\Messaging\NoOpMessageConverter::class,
+            MessageConverter::class => NoOpMessageConverter::class,
         ],
         'factories' => [
-            // app
+            // expressive
             Application::class => ApplicationFactory::class,
+            ErrorHandler::class => ErrorHandlerFactory::class,
+            ErrorResponseGenerator::class => ErrorResponseGeneratorFactory::class,
+            UrlHelper::class => UrlHelperFactory::class,
+            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+            NotFoundDelegate::class => NotFoundDelegateFactory::class,
+            NotFoundHandler::class => NotFoundHandlerFactory::class,
+            OriginalMessages::class => InvokableFactory::class,
+            RouterInterface::class => FastRouteRouterFactory::class,
+            // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions
             Action\Load::class => Container\Action\LoadFactory::class,
             Action\Post::class => Container\Action\PostFactory::class,
             // prooph
-            \Prooph\Common\Messaging\FQCNMessageFactory::class => InvokableFactory::class,
-            \Prooph\Common\Messaging\NoOpMessageConverter::class => InvokableFactory::class,
-            // for pdo adapter
-            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLAggregateStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\PDO\\IndexingStrategy\\MySQLSingleStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\PDO\\IndexingStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
-            'Prooph\\EventStore\\PDO\\TableNameGeneratorStrategy\\Sha1' => InvokableFactory::class,
+            FQCNMessageFactory::class => InvokableFactory::class,
+            NoOpMessageConverter::class => InvokableFactory::class,
+            // for pdo event-store
+            'Prooph\\EventStore\\Pdo\\PersistenceStrategy\\MySqlAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Pdo\\PersistenceStrategy\\MySqlSingleStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Pdo\\PersistenceStrategy\\PostgresAggregateStreamStrategy' => InvokableFactory::class,
+            'Prooph\\EventStore\\Pdo\\PersistenceStrategy\\PostgresSingleStreamStrategy' => InvokableFactory::class,
         ],
     ],
 ];

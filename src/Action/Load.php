@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Action;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
@@ -19,8 +21,9 @@ use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Expressive\Helper\UrlHelper;
 
-class Load
+class Load implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -33,21 +36,22 @@ class Load
     private $messageConverter;
 
     /**
-     * @var array
+     * @var Transformer[]
      */
-    private $transformers;
+    private $transformers = [];
 
-    public function __construct(EventStore $eventStore, MessageConverter $messageConverter)
+    /**
+     * @var UrlHelper
+     */
+    private $urlHelper;
+
+    public function __construct(EventStore $eventStore, MessageConverter $messageConverter, UrlHelper $urlHelper)
     {
         $this->eventStore = $eventStore;
         $this->messageConverter = $messageConverter;
-        $this->transformers = [];
+        $this->urlHelper = $urlHelper;
     }
 
-    /**
-     * @param Transformer $transformer
-     * @param \string[] ...$names
-     */
     public function addTransformer(Transformer $transformer, string ...$names)
     {
         foreach ($names as $name) {
@@ -55,23 +59,22 @@ class Load
         }
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ): ResponseInterface {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    {
         $streamName = urldecode($request->getAttribute('streamname'));
 
         if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
-            return $this->returnDescription($streamName);
+            return $this->returnDescription($request, $streamName);
         }
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
         $start = $request->getAttribute('start');
+
         if ('head' === $start) {
             $start = PHP_INT_MAX;
         }
+
         $start = (int) $start;
 
         $count = (int) $request->getAttribute('count');
@@ -92,15 +95,19 @@ class Load
             return $transformer->error('', 404);
         }
 
-        $uri = $request->getUri();
-        $id = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort() . '/streams/' . urlencode($streamName);
-
         $entries = [];
+
         foreach ($streamEvents as $event) {
             $entry = $this->messageConverter->convertToArray($event);
             $entry['created_at'] = $entry['created_at']->format('Y-m-d\TH:i:s.u');
             $entries[] = $entry;
         }
+
+        $host = $this->host($request);
+
+        $id = $host . $this->urlHelper->generate('page::query-stream', [
+            'streamname' => urlencode($streamName),
+        ]);
 
         $result = [
             'title' => "Event stream '$streamName'",
@@ -112,35 +119,49 @@ class Load
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => $id . '/head/backward/' . $count,
+                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                        'streamname' => urlencode($streamName),
+                        'start' => 'head',
+                        'direction' => 'backward',
+                        'count' => $count,
+                    ]),
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => $id . '/1/forward/' . $count,
+                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                        'streamname' => urlencode($streamName),
+                        'start' => '1',
+                        'direction' => 'forward',
+                        'count' => $count,
+                    ]),
                     'relation' => 'last',
                 ],
             ],
             'entries' => $entries,
         ];
 
-        return $next($request, $transformer->stream($result));
+        return $transformer->stream($result);
     }
 
-    private function returnDescription(string $streamName): JsonResponse
+    private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse
     {
+        $id = $this->host($request) . $this->urlHelper->generate('page::query-stream', [
+            'streamname' => urlencode($streamName),
+        ]);
+
         return new JsonResponse(
             [
                 'title' => 'Description document for \'' . $streamName . '\'',
                 'description' => 'The description document will be presented when no accept header is present or it was requested',
                 '_links' => [
                     'self' => [
-                        'href' => '/streams/' . $streamName,
+                        'href' => $id,
                         'supportedContentTypes' => [
                             'application/vnd.eventstore.streamdesc+json',
                         ],
                     ],
                     'stream' => [
-                        'href' => '/streams/' . $streamName,
+                        'href' => $id,
                         'supportedContentTypes' => array_keys($this->transformers),
                     ],
                 ],
@@ -150,5 +171,17 @@ class Load
                 'Content-Type' => 'application/vnd.eventstore.streamdesc+json; charset=utf-8',
             ]
         );
+    }
+
+    private function host(ServerRequestInterface $request): string
+    {
+        $uri = $request->getUri();
+        $host = $uri->getScheme() . '://' . $uri->getHost();
+
+        if (null !== $uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+
+        return $host;
     }
 }

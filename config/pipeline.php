@@ -10,13 +10,13 @@
 
 declare(strict_types=1);
 
-use Zend\ConfigAggregator\ConfigAggregator;
+/**
+ * Expressive middleware pipeline
+ */
 
-return [
-    'debug' => false,
-    ConfigAggregator::ENABLE_CACHE => true,
-    'zend-expressive' => [
-        'programmatic_pipeline' => true,
-        'raise_throwables' => true,
-    ],
-];
+/** @var \Zend\Expressive\Application $app */
+$app->pipe(\Zend\Stratigility\Middleware\ErrorHandler::class);
+$app->pipeRoutingMiddleware();
+$app->pipe(\Zend\Expressive\Helper\UrlHelperMiddleware::class);
+$app->pipeDispatchMiddleware();
+$app->pipe(\Zend\Expressive\Middleware\NotFoundHandler::class);

@@ -28,10 +28,6 @@ open your database console and create a database
 
 create your event streams table, see: https://github.com/prooph/pdo-event-store/tree/master/scripts
 
-4)
-
-create one or more test streams, see: https://gist.github.com/prolic/026caaad55e9f990cd4b2d5000e2735e
-
 5)
 
 php -S 0.0.0.0:8080 -t public/.
