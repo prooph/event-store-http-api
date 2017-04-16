@@ -11,3 +11,4 @@ docs/html
 docker-compose.yml
 config/pipeline.php
 config/development.config.php
+composer.json
