@@ -16,6 +16,11 @@ declare(strict_types=1);
 
 /** @var \Zend\Expressive\Application $app */
 $app->pipe(\Zend\Stratigility\Middleware\ErrorHandler::class);
+
+// Uncomment if you want to use a base url, also add a config/autoload/config.local.php with following config:
+// return ['http' => ['base_url' => '/custom/base/path']];
+//$app->pipe(\Prooph\EventStore\Http\Api\Middleware\BaseUrl::class);
+
 $app->pipeRoutingMiddleware();
 $app->pipe(\Zend\Expressive\Helper\UrlHelperMiddleware::class);
 $app->pipeDispatchMiddleware();
