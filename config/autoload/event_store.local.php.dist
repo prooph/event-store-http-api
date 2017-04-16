@@ -27,7 +27,7 @@ return [
             // choose one !!!
             //EventStore::class => MySqlEventStoreFactory::class,
             //EventStore::class => PostgresEventStoreFactory::class,
-            //Uncomment for both pdo event storesW
+            //Uncomment for both pdo event stores
             //'pdo.connection' => PdoConnectionFactory::class,
         ],
     ],
