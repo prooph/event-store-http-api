@@ -16,6 +16,7 @@ The HTTP API is a standalone software that exposes event streams via HTTP protoc
 
 1)
 
+    cp config/pipeline.php.dist config/pipeline.php
     cp config/autoload/event_store.local.php.dist config/autoload/event_store.local.php
 
 Make your adjustments.
