@@ -1,0 +1,26 @@
+version: '2'
+services:
+  nginx:
+    image: prooph/nginx:www
+    ports:
+    #Map a free port
+      #- 8081:80
+      #- 444:443
+    links:
+      - php:php
+    volumes:
+      - .:/var/www
+
+  php:
+    image: prooph/php:7.1-fpm
+    volumes:
+      - .:/var/www
+# Uncomment to join external docker network, example joins default proophessor-do network
+# This allows you to connect to the database container of another network, again f.e. in prooph-do the default mysql container
+# can then be used as database host
+#    networks:
+#      - default
+#      - proophessordo_default
+#networks:
+#  proophessordo_default:
+#    external: true
