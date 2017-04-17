@@ -16,6 +16,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
@@ -85,14 +86,20 @@ class Load implements MiddlewareInterface
             return $transformer->error('', 400);
         }
 
-        if ($direction === 'backward') {
-            $streamEvents = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
-        } else {
-            $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count);
+        try {
+            if ($direction === 'backward') {
+                $streamEvents = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
+            } else {
+                $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count);
+            }
+        } catch (StreamNotFound $e) {
+            return $transformer->error('', 404);
         }
 
         if (! $streamEvents->valid()) {
-            return $transformer->error('', 404);
+            $response = $transformer->error('', 400);
+
+            return $response->withStatus(400, '\'' . $start . '\' is not a valid event number');
         }
 
         $entries = [];
@@ -121,8 +128,8 @@ class Load implements MiddlewareInterface
                 [
                     'uri' => $host . $this->urlHelper->generate('page::query-stream', [
                         'streamname' => urlencode($streamName),
-                        'start' => 'head',
-                        'direction' => 'backward',
+                        'start' => '1',
+                        'direction' => 'forward',
                         'count' => $count,
                     ]),
                     'relation' => 'first',
@@ -130,8 +137,8 @@ class Load implements MiddlewareInterface
                 [
                     'uri' => $host . $this->urlHelper->generate('page::query-stream', [
                         'streamname' => urlencode($streamName),
-                        'start' => '1',
-                        'direction' => 'forward',
+                        'start' => 'head',
+                        'direction' => 'backward',
                         'count' => $count,
                     ]),
                     'relation' => 'last',
