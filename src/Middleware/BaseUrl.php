@@ -18,7 +18,7 @@ use Zend\Expressive\Helper\UrlHelper;
 
 final class BaseUrl implements MiddlewareInterface
 {
-    const BASE_URL = '_base_url';
+    public const BASE_URL = '_base_url';
 
     /**
      * @var string
