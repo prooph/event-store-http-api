@@ -142,7 +142,6 @@ class LoadTest extends TestCase
         $uuid2 = Uuid::uuid4()->toString();
         $uuid3 = Uuid::uuid4()->toString();
 
-
         $time1 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $time2 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $time3 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
@@ -169,7 +168,7 @@ class LoadTest extends TestCase
                 'created_at' => $time3,
                 'payload' => ['three'],
                 'metadata' => [],
-            ])
+            ]),
         ]))->shouldBeCalled();
 
         $messageConverter = new NoOpMessageConverter();
@@ -279,7 +278,6 @@ class LoadTest extends TestCase
         $uuid2 = Uuid::uuid4()->toString();
         $uuid3 = Uuid::uuid4()->toString();
 
-
         $time1 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $time2 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $time3 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
@@ -306,7 +304,7 @@ class LoadTest extends TestCase
                 'created_at' => $time1,
                 'payload' => ['one'],
                 'metadata' => [],
-            ])
+            ]),
         ]))->shouldBeCalled();
 
         $messageConverter = new NoOpMessageConverter();

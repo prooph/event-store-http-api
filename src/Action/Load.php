@@ -98,6 +98,7 @@ class Load implements MiddlewareInterface
 
         if (! $streamEvents->valid()) {
             $response = $transformer->error('', 400);
+
             return $response->withStatus(400, '\'' . $start . '\' is not a valid event number');
         }
 
