@@ -15,6 +15,8 @@ namespace Prooph\EventStore\Http\Api;
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\NoOpMessageConverter;
+use Prooph\EventStore\Http\Api\Container\Middleware\BaseUrlFactory;
+use Prooph\EventStore\Http\Api\Middleware\BaseUrl;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Container\ErrorHandlerFactory;
@@ -50,6 +52,7 @@ return [
             NotFoundHandler::class => NotFoundHandlerFactory::class,
             OriginalMessages::class => InvokableFactory::class,
             RouterInterface::class => FastRouteRouterFactory::class,
+            BaseUrl::class => BaseUrlFactory::class,
             // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions
