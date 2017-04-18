@@ -14,11 +14,11 @@ namespace ProophTest\EventStore\Http\Api\Container\Action;
 
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\DeleteStream;
-use Prooph\EventStore\Http\Api\Container\Action\DeleteStreamFactory;
+use Prooph\EventStore\Http\Api\Action\Delete;
+use Prooph\EventStore\Http\Api\Container\Action\DeleteFactory;
 use Psr\Container\ContainerInterface;
 
-class DeleteStreamFactoryTest extends TestCase
+class DeleteFactoryTest extends TestCase
 {
     /**
      * @test
@@ -30,9 +30,9 @@ class DeleteStreamFactoryTest extends TestCase
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
 
-        $factory = new DeleteStreamFactory();
+        $factory = new DeleteFactory();
         $stream = $factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(DeleteStream::class, $stream);
+        $this->assertInstanceOf(Delete::class, $stream);
     }
 }

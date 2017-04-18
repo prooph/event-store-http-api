@@ -16,12 +16,12 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\StreamNotFound;
-use Prooph\EventStore\Http\Api\Action\DeleteStream;
+use Prooph\EventStore\Http\Api\Action\Delete;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-class DeleteStreamTest extends TestCase
+class DeleteTest extends TestCase
 {
     /**
      * @test
@@ -36,7 +36,7 @@ class DeleteStreamTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new DeleteStream($eventStore->reveal());
+        $action = new Delete($eventStore->reveal());
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
@@ -57,7 +57,7 @@ class DeleteStreamTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new DeleteStream($eventStore->reveal());
+        $action = new Delete($eventStore->reveal());
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 

@@ -20,7 +20,7 @@ use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class DeleteStream implements MiddlewareInterface
+final class Delete implements MiddlewareInterface
 {
     /**
      * @var EventStore

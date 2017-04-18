@@ -57,6 +57,6 @@ $app->post(
 
 $app->get(
     '/delete/{streamname}',
-    Action\DeleteStream::class,
+    Action\Delete::class,
     'page::delete-stream'
 );
