@@ -31,12 +31,6 @@ $app->get(
     ]
 );
 
-$app->get(
-    '/streammetadata/{streamname}',
-    Action\FetchStreamMetadata::class,
-    'page::fetch-stream-metadata'
-);
-
 $app->post(
     '/streams/{streamname}',
     [
@@ -44,4 +38,19 @@ $app->post(
         Action\Post::class,
     ],
     'page::post-stream'
+);
+
+$app->get(
+    '/streammetadata/{streamname}',
+    Action\FetchStreamMetadata::class,
+    'page::fetch-stream-metadata'
+);
+
+$app->post(
+    '/streammetadata/{streamname}',
+    [
+        \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
+        Action\UpdateStreamMetadata::class,
+    ],
+    'page::update-stream-metadata'
 );

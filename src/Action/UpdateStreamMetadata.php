@@ -16,51 +16,38 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\StreamNotFound;
-use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\EmptyResponse;
 
-class FetchStreamMetadata implements MiddlewareInterface
+class UpdateStreamMetadata implements MiddlewareInterface
 {
     /**
      * @var EventStore
      */
     private $eventStore;
 
-    /**
-     * @var Transformer[]
-     */
-    private $transformers = [];
-
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
-    }
-
-    public function addTransformer(Transformer $transformer, string ...$names)
-    {
-        foreach ($names as $name) {
-            $this->transformers[$name] = $transformer;
-        }
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $streamName = urldecode($request->getAttribute('streamname'));
 
-        if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
-            return new JsonResponse('', 406);
+        if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
+            return new EmptyResponse(415);
         }
+
+        $metadata = $request->getParsedBody();
 
         try {
-            $metadata = $this->eventStore->fetchStreamMetadata(new StreamName($streamName));
+            $this->eventStore->updateStreamMetadata(new StreamName($streamName), $metadata);
         } catch (StreamNotFound $e) {
-            return new JsonResponse('', 404);
+            return new EmptyResponse(404);
         }
 
-        $transformer = $this->transformers[$request->getHeaderLine('Accept')];
-
-        return $transformer->stream($metadata);
+        return new EmptyResponse(201);
     }
 }
