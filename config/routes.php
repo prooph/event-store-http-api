@@ -10,6 +10,8 @@
 
 declare(strict_types=1);
 
+use Prooph\EventStore\Http\Api\Action;
+
 /**
  * Expressive routed middleware
  */
@@ -17,7 +19,7 @@ declare(strict_types=1);
 /** @var \Zend\Expressive\Application $app */
 $app->get(
     '/streams/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
-    \Prooph\EventStore\Http\Api\Action\Load::class,
+    Action\Load::class,
     'page::query-stream'
 )
     ->setOptions([
@@ -29,11 +31,17 @@ $app->get(
     ]
 );
 
+$app->get(
+    '/streammetadata/{streamname}',
+    Action\FetchStreamMetadata::class,
+    'page::fetch-stream-metadata'
+);
+
 $app->post(
     '/streams/{streamname}',
     [
         \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
-        \Prooph\EventStore\Http\Api\Action\Post::class,
+        Action\Post::class,
     ],
     'page::post-stream'
 );
