@@ -29,7 +29,7 @@ use Ramsey\Uuid\Uuid;
 use Throwable;
 use Zend\Diactoros\Response\EmptyResponse;
 
-class Post implements MiddlewareInterface
+final class Post implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -173,6 +173,6 @@ class Post implements MiddlewareInterface
             $this->eventStore->commit();
         }
 
-        return new EmptyResponse(201);
+        return new EmptyResponse(204);
     }
 }

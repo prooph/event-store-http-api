@@ -20,7 +20,7 @@ use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class UpdateStreamMetadata implements MiddlewareInterface
+final class DeleteStream implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -36,14 +36,8 @@ final class UpdateStreamMetadata implements MiddlewareInterface
     {
         $streamName = urldecode($request->getAttribute('streamname'));
 
-        if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
-            return new EmptyResponse(415);
-        }
-
-        $metadata = $request->getParsedBody();
-
         try {
-            $this->eventStore->updateStreamMetadata(new StreamName($streamName), $metadata);
+            $this->eventStore->delete(new StreamName($streamName));
         } catch (StreamNotFound $e) {
             return new EmptyResponse(404);
         }

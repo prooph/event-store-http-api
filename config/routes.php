@@ -54,3 +54,9 @@ $app->post(
     ],
     'page::update-stream-metadata'
 );
+
+$app->get(
+    '/delete/{streamname}',
+    Action\DeleteStream::class,
+    'page::delete-stream'
+);

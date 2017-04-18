@@ -25,7 +25,7 @@ use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\Helper\UrlHelper;
 
-class Load implements MiddlewareInterface
+final class Load implements MiddlewareInterface
 {
     /**
      * @var EventStore

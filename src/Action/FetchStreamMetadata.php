@@ -21,7 +21,7 @@ use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-class FetchStreamMetadata implements MiddlewareInterface
+final class FetchStreamMetadata implements MiddlewareInterface
 {
     /**
      * @var EventStore

@@ -442,7 +442,7 @@ class PostTest extends TestCase
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -489,7 +489,7 @@ class PostTest extends TestCase
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -537,7 +537,7 @@ class PostTest extends TestCase
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -582,6 +582,6 @@ class PostTest extends TestCase
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
