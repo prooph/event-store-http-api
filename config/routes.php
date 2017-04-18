@@ -60,3 +60,9 @@ $app->get(
     Action\Delete::class,
     'page::delete-stream'
 );
+
+$app->get(
+    '/has-stream/{streamname}',
+    Action\HasStream::class,
+    'page::has-stream'
+);
