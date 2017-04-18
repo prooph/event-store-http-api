@@ -19,7 +19,7 @@ use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;
+use Zend\Diactoros\Response\JsonResponse;
 
 class FetchStreamMetadata implements MiddlewareInterface
 {
@@ -50,17 +50,17 @@ class FetchStreamMetadata implements MiddlewareInterface
         $streamName = urldecode($request->getAttribute('streamname'));
 
         if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
-            return new EmptyResponse(415);
+            return new JsonResponse('', 406);
         }
 
         try {
             $metadata = $this->eventStore->fetchStreamMetadata(new StreamName($streamName));
         } catch (StreamNotFound $e) {
-            return new EmptyResponse(404);
+            return new JsonResponse('', 404);
         }
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
-        return $transformer->createResponse($metadata);
+        return $transformer->stream($metadata);
     }
 }

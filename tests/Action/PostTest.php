@@ -29,7 +29,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\EmptyResponse;
 
 class PostTest extends TestCase
 {
@@ -49,7 +49,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(415, $response->getStatusCode());
     }
 
@@ -70,7 +70,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Write request body invalid', $response->getReasonPhrase());
     }
@@ -92,7 +92,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Write request body invalid', $response->getReasonPhrase());
     }
@@ -114,7 +114,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Empty event uuid provided', $response->getReasonPhrase());
     }
@@ -138,7 +138,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid event uuid provided', $response->getReasonPhrase());
     }
@@ -162,7 +162,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Empty event name provided', $response->getReasonPhrase());
     }
@@ -187,7 +187,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid event name provided', $response->getReasonPhrase());
     }
@@ -212,7 +212,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Empty event payload provided', $response->getReasonPhrase());
     }
@@ -238,7 +238,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid event payload provided', $response->getReasonPhrase());
     }
@@ -264,7 +264,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Empty event metadata provided', $response->getReasonPhrase());
     }
@@ -291,7 +291,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid event metadata provided', $response->getReasonPhrase());
     }
@@ -319,7 +319,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid created at provided, expected format: Y-m-d\TH:i:s.u', $response->getReasonPhrase());
     }
@@ -357,7 +357,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Could not create event instance', $response->getReasonPhrase());
     }
@@ -390,7 +390,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('Cannot create or append to stream', $response->getReasonPhrase());
     }
@@ -441,7 +441,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(201, $response->getStatusCode());
     }
 
@@ -488,7 +488,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(201, $response->getStatusCode());
     }
 
@@ -536,7 +536,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(201, $response->getStatusCode());
     }
 
@@ -581,7 +581,7 @@ class PostTest extends TestCase
         $action = new Post($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(201, $response->getStatusCode());
     }
 }

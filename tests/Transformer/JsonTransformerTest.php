@@ -19,35 +19,15 @@ use Zend\Diactoros\Response\JsonResponse;
 class JsonTransformerTest extends TestCase
 {
     /**
-     * @var JsonTransformer
-     */
-    private $transformer;
-
-    protected function setUp(): void
-    {
-        $this->transformer = new JsonTransformer();
-    }
-
-    /**
      * @test
      */
-    public function it_streams_response(): void
+    public function it_creates_response(): void
     {
-        $response = $this->transformer->stream(['foo' => 'bar']);
+        $transformer = new JsonTransformer();
+
+        $response = $transformer->createResponse(['foo' => 'bar']);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->getContents(), true));
-    }
-
-    /**
-     * @test
-     */
-    public function it_returns_error(): void
-    {
-        $response = $this->transformer->error('foo', 400);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('"foo"', $response->getBody()->getContents());
     }
 }

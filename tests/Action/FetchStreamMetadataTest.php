@@ -20,6 +20,7 @@ use Prooph\EventStore\Http\Api\Action\FetchStreamMetadata;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
 class FetchStreamMetadataTest extends TestCase
@@ -27,7 +28,7 @@ class FetchStreamMetadataTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_406_when_invalid_accept_header_sent(): void
+    public function it_returns_415_when_invalid_accept_header_sent(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
 
@@ -42,8 +43,8 @@ class FetchStreamMetadataTest extends TestCase
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals(406, $response->getStatusCode());
+        $this->assertInstanceOf(EmptyResponse::class, $response);
+        $this->assertEquals(415, $response->getStatusCode());
     }
 
     /**
@@ -65,7 +66,7 @@ class FetchStreamMetadataTest extends TestCase
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertEquals(404, $response->getStatusCode());
     }
 

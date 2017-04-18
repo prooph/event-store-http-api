@@ -28,7 +28,7 @@ use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Helper\UrlHelper;
@@ -89,48 +89,9 @@ class LoadTest extends TestCase
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
-        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEmpty(json_decode($response->getBody()->getContents()));
-    }
-
-    /**
-     * @test
-     */
-    public function it_will_use_appropriate_transformer(): void
-    {
-        $eventStore = $this->prophesize(EventStore::class);
-        $messageConverter = $this->prophesize(MessageConverter::class);
-
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getAttribute('streamname')->willReturn('foo')->shouldBeCalled();
-        $request->getAttribute('start')->willReturn('head')->shouldBeCalled();
-        $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
-        $request->getAttribute('count')->willReturn('1')->shouldBeCalled();
-
-        $urlHelper = $this->prophesize(UrlHelper::class);
-
-        $delegate = $this->prophesize(DelegateInterface::class);
-
-        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
-
-        $expectedResponses = [
-            'application/vnd.eventstore.atom+json' => new JsonResponse(['transformer-1']),
-            'application/vnd.eventstore.atom+html' => new HtmlResponse('<event></event>'),
-        ];
-
-        // Add all transformers to Load action.
-        foreach ($expectedResponses as $forAcceptedValue => $expectedResponse) {
-            $action->addTransformer(new TransformerStub($expectedResponse), $forAcceptedValue);
-        }
-
-        foreach ($expectedResponses as $forAcceptedValue => $expectedResponse) {
-            $request->getHeaderLine('Accept')->willReturn($forAcceptedValue);
-
-            $finalResponse = $action->process($request->reveal(), $delegate->reveal());
-
-            $this->assertSame($expectedResponse, $finalResponse);
-        }
     }
 
     /**
@@ -436,6 +397,7 @@ class LoadTest extends TestCase
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('\'1\' is not a valid event number', $response->getReasonPhrase());
     }
@@ -471,6 +433,7 @@ class LoadTest extends TestCase
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
+        $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertSame(404, $response->getStatusCode());
     }
 }
