@@ -56,8 +56,12 @@ return [
             // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions
+            Action\Delete::class => Container\Action\DeleteFactory::class,
+            Action\FetchStreamMetadata::class => Container\Action\FetchStreamMetadataFactory::class,
+            Action\HasStream::class => Container\Action\HasStreamFactory::class,
             Action\Load::class => Container\Action\LoadFactory::class,
             Action\Post::class => Container\Action\PostFactory::class,
+            Action\UpdateStreamMetadata::class => Container\Action\UpdateStreamMetadataFactory::class,
             // prooph
             FQCNMessageFactory::class => InvokableFactory::class,
             NoOpMessageConverter::class => InvokableFactory::class,

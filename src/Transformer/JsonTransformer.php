@@ -21,18 +21,8 @@ final class JsonTransformer implements Transformer
      * @param array $result
      * @return ResponseInterface
      */
-    public function stream(array $result): ResponseInterface
+    public function createResponse(array $result): ResponseInterface
     {
         return new JsonResponse($result);
-    }
-
-    /**
-     * @param string $message
-     * @param int $code
-     * @return ResponseInterface
-     */
-    public function error(string $message, int $code): ResponseInterface
-    {
-        return new JsonResponse($message, $code);
     }
 }

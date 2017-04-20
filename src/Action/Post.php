@@ -27,9 +27,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Throwable;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\EmptyResponse;
 
-class Post implements MiddlewareInterface
+final class Post implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -50,13 +50,13 @@ class Post implements MiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
         if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
-            return new JsonResponse('', 415);
+            return new EmptyResponse(415);
         }
 
         $readEvents = $request->getParsedBody();
 
         if (! is_array($readEvents) || empty($readEvents)) {
-            $response = new JsonResponse('');
+            $response = new EmptyResponse();
 
             return $response->withStatus(400, 'Write request body invalid');
         }
@@ -65,37 +65,37 @@ class Post implements MiddlewareInterface
 
         foreach ($readEvents as $event) {
             if (! is_array($event)) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Write request body invalid');
             }
 
             if (! isset($event['uuid'])) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Empty event uuid provided');
             }
 
             if (! is_string($event['uuid']) || ! Uuid::isValid($event['uuid'])) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Invalid event uuid provided');
             }
 
             if (! isset($event['message_name'])) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Empty event name provided');
             }
 
             if (! is_string($event['message_name']) || strlen($event['message_name']) === 0) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Invalid event name provided');
             }
 
             if (! isset($event['payload'])) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Empty event payload provided');
             }
@@ -103,13 +103,13 @@ class Post implements MiddlewareInterface
             try {
                 MessageDataAssertion::assertPayload($event['payload']);
             } catch (Throwable $e) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Invalid event payload provided');
             }
 
             if (! isset($event['metadata'])) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Empty event metadata provided');
             }
@@ -117,7 +117,7 @@ class Post implements MiddlewareInterface
             try {
                 MessageDataAssertion::assertMetadata($event['metadata']);
             } catch (Throwable $e) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Invalid event metadata provided');
             }
@@ -133,7 +133,7 @@ class Post implements MiddlewareInterface
             }
 
             if (! $event['created_at'] instanceof DateTimeImmutable) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Invalid created at provided, expected format: Y-m-d\TH:i:s.u');
             }
@@ -141,7 +141,7 @@ class Post implements MiddlewareInterface
             try {
                 $events[] = $this->messageFactory->createMessageFromArray($event['message_name'], $event);
             } catch (Throwable $e) {
-                $response = new JsonResponse('');
+                $response = new EmptyResponse();
 
                 return $response->withStatus(400, 'Could not create event instance');
             }
@@ -164,7 +164,7 @@ class Post implements MiddlewareInterface
                 $this->eventStore->rollback();
             }
 
-            $response = new JsonResponse('');
+            $response = new EmptyResponse();
 
             return $response->withStatus(500, 'Cannot create or append to stream');
         }
@@ -173,6 +173,6 @@ class Post implements MiddlewareInterface
             $this->eventStore->commit();
         }
 
-        return new JsonResponse('', 201);
+        return new EmptyResponse(204);
     }
 }

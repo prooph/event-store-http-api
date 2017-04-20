@@ -10,15 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Http\Api\Transformer;
+namespace Prooph\EventStore\Http\Api\Container\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Http\Api\Action\Delete;
+use Psr\Container\ContainerInterface;
 
-interface Transformer
+final class DeleteFactory
 {
-    /**
-     * @param array $result
-     * @return ResponseInterface
-     */
-    public function createResponse(array $result): ResponseInterface;
+    public function __invoke(ContainerInterface $container): Delete
+    {
+        return new Delete($container->get(EventStore::class));
+    }
 }

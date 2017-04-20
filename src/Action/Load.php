@@ -21,10 +21,11 @@ use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\Helper\UrlHelper;
 
-class Load implements MiddlewareInterface
+final class Load implements MiddlewareInterface
 {
     /**
      * @var EventStore
@@ -83,7 +84,7 @@ class Load implements MiddlewareInterface
         $direction = $request->getAttribute('direction');
 
         if (PHP_INT_MAX === $start && 'forward' === $direction) {
-            return $transformer->error('', 400);
+            return new EmptyResponse(400);
         }
 
         try {
@@ -93,11 +94,11 @@ class Load implements MiddlewareInterface
                 $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count);
             }
         } catch (StreamNotFound $e) {
-            return $transformer->error('', 404);
+            return new EmptyResponse(404);
         }
 
         if (! $streamEvents->valid()) {
-            $response = $transformer->error('', 400);
+            $response = new EmptyResponse();
 
             return $response->withStatus(400, '\'' . $start . '\' is not a valid event number');
         }
@@ -147,7 +148,7 @@ class Load implements MiddlewareInterface
             'entries' => $entries,
         ];
 
-        return $transformer->stream($result);
+        return $transformer->createResponse($result);
     }
 
     private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse

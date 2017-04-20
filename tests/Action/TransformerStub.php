@@ -34,17 +34,7 @@ final class TransformerStub implements Transformer
      * @param array $result
      * @return ResponseInterface
      */
-    public function stream(array $result): ResponseInterface
-    {
-        return $this->result;
-    }
-
-    /**
-     * @param string $message
-     * @param int $code
-     * @return ResponseInterface
-     */
-    public function error(string $message, int $code): ResponseInterface
+    public function createResponse(array $result): ResponseInterface
     {
         return $this->result;
     }
