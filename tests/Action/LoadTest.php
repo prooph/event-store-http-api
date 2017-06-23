@@ -25,6 +25,7 @@ use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Action\Load;
 use Prooph\EventStore\Http\Api\GenericEvent;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
+use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
@@ -108,7 +109,7 @@ class LoadTest extends TestCase
         $time3 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->load(new StreamName('foo'), 1, 3)->willReturn(new ArrayIterator([
+        $eventStore->load(new StreamName('foo'), 1, 3, new MetadataMatcher())->willReturn(new ArrayIterator([
             GenericEvent::fromArray([
                 'uuid' => $uuid1,
                 'message_name' => 'message_one',
@@ -146,6 +147,7 @@ class LoadTest extends TestCase
         $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('3')->shouldBeCalled();
         $request->getUri()->willReturn($uri->reveal())->shouldBeCalled();
+        $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('page::query-stream', [
@@ -244,7 +246,7 @@ class LoadTest extends TestCase
         $time3 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
 
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->loadReverse(new StreamName('foo'), 3, 3)->willReturn(new ArrayIterator([
+        $eventStore->loadReverse(new StreamName('foo'), 3, 3, new MetadataMatcher())->willReturn(new ArrayIterator([
             GenericEvent::fromArray([
                 'uuid' => $uuid3,
                 'message_name' => 'message_three',
@@ -282,6 +284,7 @@ class LoadTest extends TestCase
         $request->getAttribute('direction')->willReturn('backward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('3')->shouldBeCalled();
         $request->getUri()->willReturn($uri->reveal())->shouldBeCalled();
+        $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('page::query-stream', [
@@ -372,7 +375,7 @@ class LoadTest extends TestCase
     public function it_return_400_status_code_on_empty_stream(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->load(new StreamName('foo'), 1, 3)->willReturn(new EmptyIterator());
+        $eventStore->load(new StreamName('foo'), 1, 3, new MetadataMatcher())->willReturn(new EmptyIterator());
 
         $messageConverter = $this->prophesize(MessageConverter::class);
 
@@ -382,6 +385,7 @@ class LoadTest extends TestCase
         $request->getAttribute('start')->willReturn('1')->shouldBeCalled();
         $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('3')->shouldBeCalled();
+        $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
 
@@ -408,7 +412,7 @@ class LoadTest extends TestCase
     public function it_return_404_status_code_on_stream_not_found(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->load(new StreamName('foo'), 1, 3)->willThrow(new StreamNotFound());
+        $eventStore->load(new StreamName('foo'), 1, 3, new MetadataMatcher())->willThrow(new StreamNotFound());
 
         $messageConverter = $this->prophesize(MessageConverter::class);
 
@@ -418,6 +422,7 @@ class LoadTest extends TestCase
         $request->getAttribute('start')->willReturn('1')->shouldBeCalled();
         $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
         $request->getAttribute('count')->willReturn('3')->shouldBeCalled();
+        $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
 
