@@ -164,10 +164,6 @@ final class Load implements MiddlewareInterface
         foreach ($request->getQueryParams() as $queryParam => $value) {
             $matches = [];
 
-            if (! is_string($value)) {
-                continue;
-            }
-
             if (preg_match('/^meta_(\d+)_field$/', $queryParam, $matches)) {
                 $metadata[$matches[1]]['field'] = $value;
             } elseif (preg_match('/^meta_(\d+)_operator$/', $queryParam, $matches)
@@ -191,13 +187,13 @@ final class Load implements MiddlewareInterface
 
         foreach ($metadata as $key => $match) {
             if (isset($match['field'], $match['operator'], $match['value'])) {
-                $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::METADATA());
+                $metadataMatcher = $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::METADATA());
             }
         }
 
         foreach ($messageProperty as $key => $match) {
             if (isset($match['field'], $match['operator'], $match['value'])) {
-                $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::MESSAGE_PROPERTY());
+                $metadataMatcher = $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::MESSAGE_PROPERTY());
             }
         }
 
