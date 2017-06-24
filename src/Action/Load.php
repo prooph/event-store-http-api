@@ -18,6 +18,9 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
+use Prooph\EventStore\Metadata\FieldType;
+use Prooph\EventStore\Metadata\MetadataMatcher;
+use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -87,11 +90,13 @@ final class Load implements MiddlewareInterface
             return new EmptyResponse(400);
         }
 
+        $metadataMatcher = $this->buildMetadataMatcher($request);
+
         try {
             if ($direction === 'backward') {
-                $streamEvents = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count);
+                $streamEvents = $this->eventStore->loadReverse(new StreamName($streamName), $start, $count, $metadataMatcher);
             } else {
-                $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count);
+                $streamEvents = $this->eventStore->load(new StreamName($streamName), $start, $count, $metadataMatcher);
             }
         } catch (StreamNotFound $e) {
             return new EmptyResponse(404);
@@ -149,6 +154,50 @@ final class Load implements MiddlewareInterface
         ];
 
         return $transformer->createResponse($result);
+    }
+
+    private function buildMetadataMatcher(ServerRequestInterface $request): MetadataMatcher
+    {
+        $metadata = [];
+        $messageProperty = [];
+
+        foreach ($request->getQueryParams() as $queryParam => $value) {
+            $matches = [];
+
+            if (preg_match('/^meta_(\d+)_field$/', $queryParam, $matches)) {
+                $metadata[$matches[1]]['field'] = $value;
+            } elseif (preg_match('/^meta_(\d+)_operator$/', $queryParam, $matches)
+                && defined(Operator::class . '::' . $value)
+            ) {
+                $metadata[$matches[1]]['operator'] = Operator::byName($value);
+            } elseif (preg_match('/^meta_(\d+)_value$/', $queryParam, $matches)) {
+                $metadata[$matches[1]]['value'] = $value;
+            } elseif (preg_match('/^property_(\d+)_field$/', $queryParam, $matches)) {
+                $messageProperty[$matches[1]]['field'] = $value;
+            } elseif (preg_match('/^property_(\d+)_operator$/', $queryParam, $matches)
+                && defined(Operator::class . '::' . $value)
+            ) {
+                $messageProperty[$matches[1]]['operator'] = Operator::byName($value);
+            } elseif (preg_match('/^property_(\d+)_value$/', $queryParam, $matches)) {
+                $messageProperty[$matches[1]]['value'] = $value;
+            }
+        }
+
+        $metadataMatcher = new MetadataMatcher();
+
+        foreach ($metadata as $key => $match) {
+            if (isset($match['field'], $match['operator'], $match['value'])) {
+                $metadataMatcher = $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::METADATA());
+            }
+        }
+
+        foreach ($messageProperty as $key => $match) {
+            if (isset($match['field'], $match['operator'], $match['value'])) {
+                $metadataMatcher = $metadataMatcher->withMetadataMatch($match['field'], $match['operator'], $match['value'], FieldType::MESSAGE_PROPERTY());
+            }
+        }
+
+        return $metadataMatcher;
     }
 
     private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse
