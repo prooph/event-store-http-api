@@ -50,11 +50,11 @@ class FetchProjectionNamesRegexTest extends TestCase
     public function it_returns_filtered_projection_names(): void
     {
         $projectionManager = $this->prophesize(ProjectionManager::class);
-        $projectionManager->fetchProjectionNames('^foo$', 20, 0)->willReturn(['foo'])->shouldBeCalled();
+        $projectionManager->fetchProjectionNamesRegex('^foo$', 20, 0)->willReturn(['foo'])->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
-        $request->getAttribute('filter')->willReturn(json_encode('^foo$'))->shouldBeCalled();
+        $request->getAttribute('filter')->willReturn(urlencode('^foo$'))->shouldBeCalled();
         $request->getAttribute('limit')->willReturn('20')->shouldBeCalled();
         $request->getAttribute('offset')->willReturn('0')->shouldBeCalled();
 
