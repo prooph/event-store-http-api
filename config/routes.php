@@ -57,7 +57,7 @@ $app->post(
 
 $app->get(
     '/delete/{streamname}',
-    Action\Delete::class,
+    Action\DeleteStream::class,
     'page::delete-stream'
 );
 
@@ -91,4 +91,22 @@ $app->get(
                 'offet' => 0,
             ],
         ]
-    );
+);
+
+$app->get(
+    'projection/delete/{name}/deleteEmittedEvents:true|false',
+    Action\DeleteProjection::class,
+    'page::delete-projection'
+);
+
+$app->get(
+    'projection/reset/{name}',
+    Action\DeleteProjection::class,
+    'page::reset-projection'
+);
+
+$app->get(
+    'projection/stop/{name}',
+    Action\DeleteProjection::class,
+    'page::stop-projection'
+);

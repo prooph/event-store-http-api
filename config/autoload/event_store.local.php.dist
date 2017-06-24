@@ -13,22 +13,29 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api;
 
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Pdo\Container\MariaDbProjectionManagerFactory;
+use Prooph\EventStore\Pdo\Container\MariaDbEventStoreFactory;
+use Prooph\EventStore\Pdo\Container\MySqlProjectionManagerFactory;
 use Prooph\EventStore\Pdo\Container\MySqlEventStoreFactory;
-use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
 use Prooph\EventStore\Pdo\Container\PdoConnectionFactory;
+use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
+use Prooph\EventStore\Pdo\Container\PostgresProjectionManagerFactory;
+use Prooph\EventStore\Pdo\PersistenceStrategy\MariaDbAggregateStreamStrategy;
+use Prooph\EventStore\Pdo\PersistenceStrategy\MariaDbSingleStreamStrategy;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlSingleStreamStrategy;
 use Prooph\EventStore\Pdo\PersistenceStrategy\PostgresAggregateStreamStrategy;
 use Prooph\EventStore\Pdo\PersistenceStrategy\PostgresSingleStreamStrategy;
+use Prooph\EventStore\Projection\ProjectionManager;
 
 return [
     'dependencies' => [
         'factories' => [
             // choose one !!!
+            //EventStore::class => MariaDbEventStoreFactory::class,
             //EventStore::class => MySqlEventStoreFactory::class,
             //EventStore::class => PostgresEventStoreFactory::class,
-            //Uncomment for both pdo event stores
-            //'pdo.connection' => PdoConnectionFactory::class,
+            'pdo_connection' => PdoConnectionFactory::class,
         ],
     ],
     'prooph' => [
@@ -37,6 +44,8 @@ return [
                 'connection' => 'pdo_connection'
                 'message_factory' => GenericEventFactory::class,
                 // choose one !!!
+                //'persistence_strategy' => MariaDbAggregateStreamStrategy::class,
+                //'persistence_strategy' => MariaDbSingleStreamStrategy::class,
                 //'persistence_strategy' => MySqlAggregateStreamStrategy::class,
                 //'persistence_strategy' => MySqlSingleStreamStrategy::class,
                 //'persistence_strategy' => PostgresAggregateStreamStrategy::class,

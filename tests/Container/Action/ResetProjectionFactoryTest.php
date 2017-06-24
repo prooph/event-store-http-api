@@ -13,26 +13,26 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Http\Api\Container\Action;
 
 use PHPUnit\Framework\TestCase;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Delete;
-use Prooph\EventStore\Http\Api\Container\Action\DeleteFactory;
+use Prooph\EventStore\Http\Api\Action\ResetProjection;
+use Prooph\EventStore\Http\Api\Container\Action\ResetProjectionFactory;
+use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Container\ContainerInterface;
 
-class DeleteFactoryTest extends TestCase
+class ResetProjectionFactoryTest extends TestCase
 {
     /**
      * @test
      */
     public function it_creates_new_delete_stream_action(): void
     {
-        $eventStore = $this->prophesize(EventStore::class);
+        $projectionManager = $this->prophesize(ProjectionManager::class);
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
+        $container->get(ProjectionManager::class)->willReturn($projectionManager->reveal())->shouldBeCalled();
 
-        $factory = new DeleteFactory();
+        $factory = new ResetProjectionFactory();
         $stream = $factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(Delete::class, $stream);
+        $this->assertInstanceOf(ResetProjection::class, $stream);
     }
 }
