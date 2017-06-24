@@ -66,3 +66,16 @@ $app->get(
     Action\HasStream::class,
     'page::has-stream'
 );
+
+$app->get(
+    '/projections/fetch-names[/{filter}[/limit:[0-9]+][/offset:[0-9]+]]',
+    Action\FetchProjetionNames::class,
+    'page::fetch-projection-names'
+)
+    ->setOptions([
+        'defaults' => [
+            'limit' => 20,
+            'offet' => 0,
+        ],
+    ]
+);
