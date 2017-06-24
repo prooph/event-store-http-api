@@ -14,28 +14,26 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
-use Prooph\EventStore\StreamName;
+use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class FetchStreamMetadata implements MiddlewareInterface
+final class FetchProjectionNamesRegex implements MiddlewareInterface
 {
     /**
-     * @var EventStore
+     * @var ProjectionManager
      */
-    private $eventStore;
+    private $projectionManager;
 
     /**
      * @var Transformer[]
      */
     private $transformers = [];
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(ProjectionManager $projectionManager)
     {
-        $this->eventStore = $eventStore;
+        $this->projectionManager = $projectionManager;
     }
 
     public function addTransformer(Transformer $transformer, string ...$names)
@@ -51,16 +49,15 @@ final class FetchStreamMetadata implements MiddlewareInterface
             return new EmptyResponse(415);
         }
 
-        $streamName = urldecode($request->getAttribute('streamname'));
+        $filter = urldecode($request->getAttribute('filter'));
 
-        try {
-            $metadata = $this->eventStore->fetchStreamMetadata(new StreamName($streamName));
-        } catch (StreamNotFound $e) {
-            return new EmptyResponse(404);
-        }
+        $limit = (int) $request->getAttribute('limit');
+        $offset = (int) $request->getAttribute('offset');
+
+        $projectionNames = $this->projectionManager->fetchProjectionNamesRegex($filter, $limit, $offset);
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
-        return $transformer->createResponse($metadata);
+        return $transformer->createResponse($projectionNames);
     }
 }

@@ -34,7 +34,6 @@ class FetchStreamMetadataTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('')->shouldBeCalled();
-        $request->getAttribute('streamname')->willReturn('foo\bar')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
