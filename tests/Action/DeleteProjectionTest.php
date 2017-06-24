@@ -14,50 +14,50 @@ namespace ProophTest\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Exception\StreamNotFound;
-use Prooph\EventStore\Http\Api\Action\Delete;
-use Prooph\EventStore\StreamName;
+use Prooph\EventStore\Http\Api\Action\DeleteProjection;
+use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-class DeleteTest extends TestCase
+class DeleteProjectionTest extends TestCase
 {
     /**
      * @test
      */
-    public function it_returns_404_when_stream_not_found(): void
+    public function it_will_delete_projection_incl_emitted_events(): void
     {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->delete(new StreamName('unknown'))->willThrow(new StreamNotFound());
+        $projectionManager = $this->prophesize(ProjectionManager::class);
+        $projectionManager->deleteProjection('runner', true)->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getAttribute('streamname')->willReturn('unknown')->shouldBeCalled();
+        $request->getAttribute('name')->willReturn('runner')->shouldBeCalled();
+        $request->getAttribute('deleteEmittedEvents')->willReturn('true')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Delete($eventStore->reveal());
+        $action = new DeleteProjection($projectionManager->reveal());
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     /**
      * @test
      */
-    public function it_will_delete_stream(): void
+    public function it_will_delete_projection_without_emitted_events(): void
     {
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->delete(new StreamName('foo\bar'))->shouldBeCalled();
+        $projectionManager = $this->prophesize(ProjectionManager::class);
+        $projectionManager->deleteProjection('runner', false)->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getAttribute('streamname')->willReturn('foo\bar')->shouldBeCalled();
+        $request->getAttribute('name')->willReturn('runner')->shouldBeCalled();
+        $request->getAttribute('deleteEmittedEvents')->willReturn('false')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Delete($eventStore->reveal());
+        $action = new DeleteProjection($projectionManager->reveal());
 
         $response = $action->process($request->reveal(), $delegate->reveal());
 

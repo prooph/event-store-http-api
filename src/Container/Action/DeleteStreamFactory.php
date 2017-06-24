@@ -13,13 +13,13 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api\Container\Action;
 
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Delete;
+use Prooph\EventStore\Http\Api\Action\DeleteStream;
 use Psr\Container\ContainerInterface;
 
-final class DeleteFactory
+final class DeleteStreamFactory
 {
-    public function __invoke(ContainerInterface $container): Delete
+    public function __invoke(ContainerInterface $container): DeleteStream
     {
-        return new Delete($container->get(EventStore::class));
+        return new DeleteStream($container->get(EventStore::class));
     }
 }

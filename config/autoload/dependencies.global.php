@@ -56,7 +56,7 @@ return [
             // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions
-            Action\Delete::class => Container\Action\DeleteFactory::class,
+            Action\DeleteStream::class => Container\Action\DeleteStreamFactory::class,
             Action\FetchStreamMetadata::class => Container\Action\FetchStreamMetadataFactory::class,
             Action\HasStream::class => Container\Action\HasStreamFactory::class,
             Action\Load::class => Container\Action\LoadFactory::class,
