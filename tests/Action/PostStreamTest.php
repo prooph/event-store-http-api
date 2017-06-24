@@ -19,7 +19,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Post;
+use Prooph\EventStore\Http\Api\Action\PostStream;
 use Prooph\EventStore\Http\Api\GenericEvent;
 use Prooph\EventStore\Http\Api\GenericEventFactory;
 use Prooph\EventStore\Stream;
@@ -31,7 +31,7 @@ use Ramsey\Uuid\Uuid;
 use RuntimeException;
 use Zend\Diactoros\Response\EmptyResponse;
 
-class PostTest extends TestCase
+class PostStreamTest extends TestCase
 {
     /**
      * @test
@@ -46,7 +46,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -67,7 +67,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -89,7 +89,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -111,7 +111,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -135,7 +135,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -159,7 +159,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -184,7 +184,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -209,7 +209,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -235,7 +235,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -261,7 +261,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -288,7 +288,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -316,7 +316,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -354,7 +354,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -387,7 +387,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory);
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -438,7 +438,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory);
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -485,7 +485,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory);
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -533,7 +533,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory);
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
@@ -578,7 +578,7 @@ class PostTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Post($eventStore->reveal(), $messageFactory);
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);

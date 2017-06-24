@@ -29,7 +29,7 @@ use Ramsey\Uuid\Uuid;
 use Throwable;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class Post implements MiddlewareInterface
+final class PostStream implements MiddlewareInterface
 {
     /**
      * @var EventStore

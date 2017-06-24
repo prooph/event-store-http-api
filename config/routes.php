@@ -19,7 +19,7 @@ use Prooph\EventStore\Http\Api\Action;
 /** @var \Zend\Expressive\Application $app */
 $app->get(
     '/streams/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
-    Action\Load::class,
+    Action\LoadStream::class,
     'page::query-stream'
 )
     ->setOptions([
@@ -35,7 +35,7 @@ $app->post(
     '/streams/{streamname}',
     [
         \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
-        Action\Post::class,
+        Action\PostStream::class,
     ],
     'page::post-stream'
 );

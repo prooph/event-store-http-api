@@ -15,7 +15,7 @@ namespace Prooph\EventStore\Http\Api;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-// Load configuration
+// LoadStream configuration
 $config = require __DIR__ . '/config.php';
 
 // Build container

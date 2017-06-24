@@ -14,16 +14,16 @@ namespace Prooph\EventStore\Http\Api\Container\Action;
 
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Load;
+use Prooph\EventStore\Http\Api\Action\LoadStream;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-final class LoadFactory
+final class LoadStreamFactory
 {
-    public function __invoke(ContainerInterface $container): Load
+    public function __invoke(ContainerInterface $container): LoadStream
     {
-        $actionHandler = new Load(
+        $actionHandler = new LoadStream(
             $container->get(EventStore::class),
             $container->get(MessageConverter::class),
             $container->get(UrlHelper::class)
