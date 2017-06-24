@@ -14,6 +14,7 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Prooph\EventStore\Exception\ProjectionNotFound;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
@@ -34,7 +35,11 @@ final class StopProjection implements MiddlewareInterface
     {
         $projectionName = urldecode($request->getAttribute('name'));
 
-        $this->projectionManager->stopProjection($projectionName);
+        try {
+            $this->projectionManager->stopProjection($projectionName);
+        } catch (ProjectionNotFound $e) {
+            return new EmptyResponse(404);
+        }
 
         return new EmptyResponse(204);
     }
