@@ -14,6 +14,7 @@ namespace ProophTest\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
+use Prooph\EventStore\Exception\ProjectionNotFound;
 use Prooph\EventStore\Http\Api\Action\DeleteProjection;
 use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,5 +64,28 @@ class DeleteProjectionTest extends TestCase
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
         $this->assertEquals(204, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_404_when_unknown_projection_asked(): void
+    {
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getAttribute('name')->willReturn('runner')->shouldBeCalled();
+        $request->getAttribute('name')->willReturn('runner')->shouldBeCalled();
+        $request->getAttribute('deleteEmittedEvents')->willReturn('true')->shouldBeCalled();
+
+        $projectionManager = $this->prophesize(ProjectionManager::class);
+        $projectionManager->deleteProjection('runner', true)->willThrow(new ProjectionNotFound())->shouldBeCalled();
+
+        $delegate = $this->prophesize(DelegateInterface::class);
+
+        $action = new DeleteProjection($projectionManager->reveal());
+
+        $response = $action->process($request->reveal(), $delegate->reveal());
+
+        $this->assertInstanceOf(EmptyResponse::class, $response);
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }
