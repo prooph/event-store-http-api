@@ -69,7 +69,7 @@ $app->get(
 
 $app->get(
     '/projections/fetch-names[/{filter}[/limit:[0-9]+][/offset:[0-9]+]]',
-    Action\FetchProjetionNames::class,
+    Action\FetchProjectionNames::class,
     'page::fetch-projection-names'
 )
     ->setOptions([
@@ -79,3 +79,16 @@ $app->get(
         ],
     ]
 );
+
+$app->get(
+    '/projections/fetch-names-regex/{filter}[/limit:[0-9]+][/offset:[0-9]+]',
+    Action\FetchProjectionNamesRegex::class,
+    'page::fetch-projection-names-regex'
+)
+    ->setOptions([
+            'defaults' => [
+                'limit' => 20,
+                'offet' => 0,
+            ],
+        ]
+    );
