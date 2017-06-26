@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api\Container\Action;
 
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Post;
+use Prooph\EventStore\Http\Api\Action\PostStream;
 use Prooph\EventStore\Http\Api\GenericEventFactory;
 use Psr\Container\ContainerInterface;
 
-final class PostFactory
+final class PostStreamFactory
 {
-    public function __invoke(ContainerInterface $container): Post
+    public function __invoke(ContainerInterface $container): PostStream
     {
-        return new Post($container->get(EventStore::class), $container->get(GenericEventFactory::class));
+        return new PostStream($container->get(EventStore::class), $container->get(GenericEventFactory::class));
     }
 }

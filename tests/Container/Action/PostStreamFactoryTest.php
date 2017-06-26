@@ -13,32 +13,30 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Http\Api\Container\Action;
 
 use PHPUnit\Framework\TestCase;
-use Prooph\Common\Messaging\MessageConverter;
+use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\Action\Load;
-use Prooph\EventStore\Http\Api\Container\Action\LoadFactory;
+use Prooph\EventStore\Http\Api\Action\PostStream;
+use Prooph\EventStore\Http\Api\Container\Action\PostStreamFactory;
+use Prooph\EventStore\Http\Api\GenericEventFactory;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Helper\UrlHelper;
 
-class LoadFactoryTest extends TestCase
+class PostStreamFactoryTest extends TestCase
 {
     /**
      * @test
      */
-    public function it_creates_new_load_action(): void
+    public function it_creates_new_post_action(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $messageConverter = $this->prophesize(MessageConverter::class);
-        $urlHelper = $this->prophesize(UrlHelper::class);
+        $messageFactory = $this->prophesize(MessageFactory::class);
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(EventStore::class)->willReturn($eventStore->reveal())->shouldBeCalled();
-        $container->get(MessageConverter::class)->willReturn($messageConverter->reveal())->shouldBeCalled();
-        $container->get(UrlHelper::class)->willReturn($urlHelper->reveal())->shouldBeCalled();
+        $container->get(GenericEventFactory::class)->willReturn($messageFactory->reveal())->shouldBeCalled();
 
-        $factory = new LoadFactory();
+        $factory = new PostStreamFactory();
         $stream = $factory->__invoke($container->reveal());
 
-        $this->assertInstanceOf(Load::class, $stream);
+        $this->assertInstanceOf(PostStream::class, $stream);
     }
 }

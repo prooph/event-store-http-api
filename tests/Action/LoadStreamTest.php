@@ -22,7 +22,7 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Exception\StreamNotFound;
-use Prooph\EventStore\Http\Api\Action\Load;
+use Prooph\EventStore\Http\Api\Action\LoadStream;
 use Prooph\EventStore\Http\Api\GenericEvent;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Prooph\EventStore\Metadata\FieldType;
@@ -36,7 +36,7 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Helper\UrlHelper;
 
-class LoadTest extends TestCase
+class LoadStreamTest extends TestCase
 {
     /**
      * @test
@@ -55,7 +55,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
         $action->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
 
         $response = $action->process($request->reveal(), $delegate->reveal());
@@ -87,7 +87,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
         $action->addTransformer(new JsonTransformer(), 'application/vnd.eventstore.atom+json');
 
         $response = $action->process($request->reveal(), $delegate->reveal());
@@ -170,7 +170,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',
@@ -307,7 +307,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',
@@ -393,7 +393,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',
@@ -430,7 +430,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter->reveal(), $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',
@@ -520,7 +520,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',
@@ -644,7 +644,7 @@ class LoadTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new Load($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
+        $action = new LoadStream($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
         $action->addTransformer(
             new JsonTransformer(),
             'application/vnd.eventstore.atom+json',

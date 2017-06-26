@@ -59,8 +59,8 @@ return [
             Action\DeleteStream::class => Container\Action\DeleteStreamFactory::class,
             Action\FetchStreamMetadata::class => Container\Action\FetchStreamMetadataFactory::class,
             Action\HasStream::class => Container\Action\HasStreamFactory::class,
-            Action\Load::class => Container\Action\LoadFactory::class,
-            Action\Post::class => Container\Action\PostFactory::class,
+            Action\LoadStream::class => Container\Action\LoadStreamFactory::class,
+            Action\PostStream::class => Container\Action\PostStreamFactory::class,
             Action\UpdateStreamMetadata::class => Container\Action\UpdateStreamMetadataFactory::class,
             // prooph
             FQCNMessageFactory::class => InvokableFactory::class,
