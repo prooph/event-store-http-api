@@ -110,3 +110,21 @@ $app->get(
     Action\DeleteProjection::class,
     'page::stop-projection'
 );
+
+$app->get(
+    'projection/status/{name}',
+    Action\FetchProjectionStatus::class,
+    'page::fetch-projection-status'
+);
+
+$app->get(
+    'projection/state/{name}',
+    Action\FetchProjectionState::class,
+    'page::fetch-projection-state'
+);
+
+$app->get(
+    'projection/stream-positions/{name}',
+    Action\FetchProjectionStreamPositions::class,
+    'page::fetch-projection-stream-positions'
+);

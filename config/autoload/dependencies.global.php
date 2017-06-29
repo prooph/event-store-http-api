@@ -56,11 +56,19 @@ return [
             // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions
+            Action\DeleteProjection::class => Container\Action\DeleteProjectionFactory::class,
             Action\DeleteStream::class => Container\Action\DeleteStreamFactory::class,
+            Action\FetchProjectionNames::class => Container\Action\FetchProjectionNamesFactory::class,
+            Action\FetchProjectionNamesRegex::class => Container\Action\FetchProjectionNamesRegexFactory::class,
+            Action\FetchProjectionState::class => Container\Action\FetchProjectionStateFactory::class,
+            Action\FetchProjectionStatus::class => Container\Action\FetchProjectionStatusFactory::class,
+            Action\FetchProjectionStreamPositions::class => Container\Action\FetchProjectionStreamPositionsFactory::class,
             Action\FetchStreamMetadata::class => Container\Action\FetchStreamMetadataFactory::class,
             Action\HasStream::class => Container\Action\HasStreamFactory::class,
             Action\LoadStream::class => Container\Action\LoadStreamFactory::class,
             Action\PostStream::class => Container\Action\PostStreamFactory::class,
+            Action\ResetProjection::class => Container\Action\ResetProjectionFactory::class,
+            Action\StopProjection::class => Container\Action\StopProjectionFactory::class,
             Action\UpdateStreamMetadata::class => Container\Action\UpdateStreamMetadataFactory::class,
             // prooph
             FQCNMessageFactory::class => InvokableFactory::class,
