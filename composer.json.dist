@@ -26,8 +26,8 @@
     "require": {
         "php": "^7.1",
         "psr/container": "^1.0",
-        "prooph/event-store" : "^7.1.3",
-        "prooph/pdo-event-store": "^1.3.2",
+        "prooph/event-store" : "^7.2",
+        "prooph/pdo-event-store": "^1.3.3",
         "roave/security-advisories": "dev-master",
         "sandrokeil/interop-config": "^2.1",
         "zendframework/zend-config-aggregator": "^1.0",
@@ -44,7 +44,8 @@
         "phpspec/prophecy": "^1.7",
         "prooph/php-cs-fixer-config": "^0.1.1",
         "satooshi/php-coveralls": "^1.0",
-        "malukenho/docheader": "^0.1.4"
+        "malukenho/docheader": "^0.1.4",
+        "php-http/guzzle6-adapter": "^1.1.1"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0"
@@ -56,8 +57,15 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ProophTest\\EventStore\\Http\\Api\\": "tests/",
-            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/"
+            "ProophTest\\EventStore\\Http\\Api\\Unit\\": "tests/unit/",
+            "ProophTest\\EventStore\\Http\\Api\\Integration\\": "tests/integration/",
+            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/",
+            "ProophTest\\EventStore\\Pdo\\": "vendor/prooph/pdo-event-store/tests/"
+        }
+    },
+    "config": {
+        "preferred-install": {
+            "prooph/*": "source"
         }
     },
     "scripts": {
