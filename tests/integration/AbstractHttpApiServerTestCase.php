@@ -40,6 +40,10 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             $this->markTestSkipped('pcntl extension missing');
         }
 
+        if (file_exists(__DIR__ . '/../../config/autoload/event_store.local.php')) {
+            copy(__DIR__ . '/../../config/autoload/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php.copy');
+        }
+
         $config = include __DIR__ . '/event_store.local.php';
         $configFile = '<?php return ' . var_export($config, true) . ';';
         // add server config
@@ -78,6 +82,10 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         usleep(100000);
         // remove server config
         unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
+
+        if (file_exists(__DIR__ . '/../../config/autoload/event_store.local.php.copy')) {
+            copy(__DIR__ . '/../../config/autoload/event_store.local.php.copy', __DIR__ . '/../../config/autoload/event_store.local.php');
+        }
 
         // drop event streams table
         $statement = $this->connection->prepare('DROP TABLE event_streams;');
