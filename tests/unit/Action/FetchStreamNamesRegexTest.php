@@ -54,7 +54,10 @@ class FetchStreamNamesRegexTest extends TestCase
     public function it_returns_filtered_stream_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNamesRegex('^foo$', new MetadataMatcher(), 20, 0)->willReturn([new StreamName('foo')])->shouldBeCalled();
+        $eventStore
+            ->fetchStreamNamesRegex('^foo$', new MetadataMatcher(), 20, 0)
+            ->willReturn([new StreamName('foo')])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
