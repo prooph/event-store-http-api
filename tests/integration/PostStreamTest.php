@@ -12,25 +12,16 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Integration;
 
-use GuzzleHttp\Psr7\Request;
-use Http\Adapter\Guzzle6\Client;
-
 /**
  * @group integration
  */
-class DeleteProjectionTest extends AbstractHttpApiServerTestCase
+class PostStreamTest extends AbstractHttpApiServerTestCase
 {
     /**
      * @test
      */
-    public function it_receives_error_deleting_non_existing_projection(): void
+    public function it_posts_stream(): void
     {
-        $client = new Client();
-
-        $request = new Request('POST', 'http://localhost:8080/projection/delete/unknown/deleteEmittedEvents/true');
-
-        $response = $client->sendRequest($request);
-
-        $this->assertSame(404, $response->getStatusCode());
+        $this->createTestStream();
     }
 }

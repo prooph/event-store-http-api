@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Integration;
 
+use GuzzleHttp\Psr7\Request;
+use Http\Adapter\Guzzle6\Client;
 use PHPUnit\Framework\TestCase;
 use ProophTest\EventStore\Pdo\TestUtil;
 
@@ -22,21 +24,26 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
      */
     protected $projectionPid;
 
+    /**
+     * @var \PDO
+     */
+    protected $connection;
+
+    /**
+     * @var Client
+     */
+    protected $client;
+
     protected function setUp(): void
     {
         if (! extension_loaded('pcntl')) {
             $this->markTestSkipped('pcntl extension missing');
         }
 
-        copy(__DIR__ . '/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php');
-
-        $connection = TestUtil::getConnection();
-        $database = TestUtil::getDatabaseName();
-
-        $connection->exec('DROP DATABASE ' . $database);
-        $connection->exec('CREATE DATABASE ' . $database);
-
-        TestUtil::initDefaultDatabaseTables($connection);
+        $config = include __DIR__ . '/event_store.local.php';
+        $configFile = '<?php return ' . var_export($config, true) . ';';
+        // add server config
+        file_put_contents(__DIR__ . '/../../config/autoload/event_store.local.php', $configFile);
 
         $path = __DIR__ . '/../../public';
 
@@ -54,12 +61,89 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         $this->projectionPid = $processDetails['pid'];
 
-        usleep(500000);
+        $this->connection = TestUtil::getConnection();
+
+        TestUtil::initDefaultDatabaseTables($this->connection);
+
+        $this->client = new Client();
+
+        // wait for server to start
+        usleep(100000);
     }
 
     protected function tearDown(): void
     {
         posix_kill($this->projectionPid, SIGTERM);
-        usleep(500000);
+        // wait for server to stop
+        usleep(100000);
+        // remove server config
+        unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
+
+        // drop event streams table
+        $statement = $this->connection->prepare('DROP TABLE event_streams;');
+        $statement->execute();
+
+        // drop projections table
+        $statement = $this->connection->prepare('DROP TABLE projections;');
+        $statement->execute();
+
+        // drop teststream table
+        $statement = $this->connection->prepare('DROP TABLE IF EXISTS _eeaa111d0c71f10112decea3f1330e9853abe6e3;');
+        $statement->execute();
+    }
+
+    protected function createTestStream(): void
+    {
+        $request = new Request(
+            'POST',
+            'http://localhost:8080/stream/teststream',
+            [
+                'Content-Type' => 'application/vnd.eventstore.atom+json',
+            ],
+            '[
+              {
+                "uuid": "f9fea0b9-bbab-41ad-b3c1-56e09a1044a4",
+                "created_at": "2016-11-12T14:35:41.702700",
+                "message_name": "event-type",
+                "payload": {
+                  "a": "2"
+                },
+                "metadata":{"_aggregate_version":1}
+              },
+              {
+                "message_name":"foo",
+                "payload":{"b" : "c"},
+                "metadata":{"_aggregate_version":2}
+              },
+              {
+                "uuid": "8571b393-a4d6-4c82-be96-4371a2795d18",
+                "created_at": "2016-11-12T14:35:41.705700",
+                "message_name": "event-type"
+              }
+            ]'
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
+    }
+
+    public function updateStreamMetadata(): void
+    {
+        $request = new Request(
+            'POST',
+            'http://localhost:8080/streammetadata/teststream',
+            [
+                'Content-Type' => 'application/vnd.eventstore.atom+json',
+            ],
+            '[
+              {"foo": "bar"},
+              {"foobar": "baz"}
+            ]'
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
     }
 }

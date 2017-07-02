@@ -71,9 +71,7 @@ final class PostStream implements MiddlewareInterface
             }
 
             if (! isset($event['uuid'])) {
-                $response = new EmptyResponse();
-
-                return $response->withStatus(400, 'Empty event uuid provided');
+                $event['uuid'] = Uuid::uuid4()->toString();
             }
 
             if (! is_string($event['uuid']) || ! Uuid::isValid($event['uuid'])) {
@@ -95,9 +93,7 @@ final class PostStream implements MiddlewareInterface
             }
 
             if (! isset($event['payload'])) {
-                $response = new EmptyResponse();
-
-                return $response->withStatus(400, 'Empty event payload provided');
+                $event['payload'] = [];
             }
 
             try {
@@ -109,9 +105,7 @@ final class PostStream implements MiddlewareInterface
             }
 
             if (! isset($event['metadata'])) {
-                $response = new EmptyResponse();
-
-                return $response->withStatus(400, 'Empty event metadata provided');
+                $event['metadata'] = [];
             }
 
             try {
