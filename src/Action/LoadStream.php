@@ -18,7 +18,6 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Model\MetadataMatcherBuilder;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
-use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
