@@ -17,6 +17,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\EventStore\Http\Api\Model\MetadataMatcherBuilder;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
 use Prooph\EventStore\ReadOnlyEventStore;
+use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
@@ -58,10 +59,17 @@ final class FetchStreamNamesRegex implements MiddlewareInterface
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
         $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, false);
 
-        $projectionNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
+        $streamNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
+
+        $streamNames = array_map(
+            function (StreamName $streamName): string {
+                return $streamName->toString();
+            },
+            $streamNames
+        );
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
-        return $transformer->createResponse($projectionNames);
+        return $transformer->createResponse($streamNames);
     }
 }

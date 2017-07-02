@@ -17,30 +17,97 @@ use GuzzleHttp\Psr7\Request;
 /**
  * @group integration
  */
-class UpdateStreamMetadataTest extends AbstractHttpApiServerTestCase
+class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 {
     /**
      * @test
      */
-    public function it_updates_stream_metadata(): void
+    public function it_fetches_stream_names(): void
     {
         $this->createTestStream();
-        $this->updateStreamMetadata();
 
+        // test fetch all stream
         $request = new Request(
-            'POST',
-            'http://localhost:8080/streammetadata/unknown',
+            'GET',
+            'http://localhost:8080/streams',
             [
-                'Content-Type' => 'application/vnd.eventstore.atom+json',
-            ],
-            '[
-              {"foo": "bar"},
-              {"foobar": "baz"}
-            ]'
+                'Accept' => 'application/json',
+            ]
         );
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('["teststream"]', $response->getBody()->getContents());
+
+        // test fetch stream with name teststream
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams/teststream',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('["teststream"]', $response->getBody()->getContents());
+
+        // test fetch stream with name foo
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams/foo',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('[]', $response->getBody()->getContents());
+
+        // test fetch all streams from offset 10
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams/10/10',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        // test fetch stream with regex ^foo
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('[]', $response->getBody()->getContents());
+
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams-regex/^foo',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('[]', $response->getBody()->getContents());
+
+        // test fetch stream with regex ^test
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams-regex/^test',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('["teststream"]', $response->getBody()->getContents());
     }
 }
