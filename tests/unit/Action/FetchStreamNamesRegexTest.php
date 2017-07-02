@@ -20,6 +20,7 @@ use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
+use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
@@ -53,7 +54,7 @@ class FetchStreamNamesRegexTest extends TestCase
     public function it_returns_filtered_stream_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNamesRegex('^foo$', new MetadataMatcher(), 20, 0)->willReturn(['foo'])->shouldBeCalled();
+        $eventStore->fetchStreamNamesRegex('^foo$', new MetadataMatcher(), 20, 0)->willReturn([new StreamName('foo')])->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
@@ -83,7 +84,10 @@ class FetchStreamNamesRegexTest extends TestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar', FieldType::METADATA());
 
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNamesRegex('^foo', $metadataMatcher, 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore
+            ->fetchStreamNamesRegex('^foo', $metadataMatcher, 20, 0)
+            ->willReturn([new StreamName('foo'), new StreamName('foobar')])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();

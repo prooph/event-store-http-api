@@ -20,6 +20,7 @@ use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
 use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
 use Prooph\EventStore\Metadata\Operator;
+use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
@@ -53,7 +54,10 @@ class FetchStreamNamesTest extends TestCase
     public function it_returns_filtered_stream_names(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNames('foo', new MetadataMatcher(), 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore
+            ->fetchStreamNames('foo', new MetadataMatcher(), 20, 0)
+            ->willReturn([new StreamName('foo'), new StreamName('foobar')])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
@@ -80,7 +84,10 @@ class FetchStreamNamesTest extends TestCase
     public function it_will_return_all_stream_names_without_filter(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNames(null, new MetadataMatcher(), 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore
+            ->fetchStreamNames(null, new MetadataMatcher(), 20, 0)
+            ->willReturn([new StreamName('foo'), new StreamName('foobar')])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
@@ -110,7 +117,10 @@ class FetchStreamNamesTest extends TestCase
         $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::EQUALS(), 'bar', FieldType::METADATA());
 
         $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->fetchStreamNames(null, $metadataMatcher, 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore
+            ->fetchStreamNames(null, $metadataMatcher, 20, 0)
+            ->willReturn([new StreamName('foo'), new StreamName('foobar')])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
