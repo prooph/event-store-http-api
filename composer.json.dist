@@ -59,8 +59,8 @@
         "psr-4": {
             "ProophTest\\EventStore\\Http\\Api\\Unit\\": "tests/unit/",
             "ProophTest\\EventStore\\Http\\Api\\Integration\\": "tests/integration/",
-            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/",
-            "ProophTest\\EventStore\\Pdo\\": "vendor/prooph/pdo-event-store/tests/"
+            "ProophTest\\EventStore\\Pdo\\": "vendor/prooph/pdo-event-store/tests/",
+            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/"
         }
     },
     "config": {
