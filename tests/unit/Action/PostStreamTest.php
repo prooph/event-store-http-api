@@ -100,23 +100,33 @@ class PostStreamTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_400_on_missing_event_uuid(): void
+    public function it_creates_missing_event_uuid(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $messageFactory = $this->prophesize(MessageFactory::class);
+        $eventStore->hasStream(new StreamName('test-stream'))->willReturn(true)->shouldBeCalled();
+        $eventStore->appendTo(
+            new StreamName('test-stream'),
+            Argument::any()
+        )->shouldBeCalled();
+
+        $messageFactory = new GenericEventFactory();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Content-Type')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
-        $request->getParsedBody()->willReturn([[]])->shouldBeCalled();
+        $request->getAttribute('streamname')->willReturn('test-stream')->shouldBeCalled();
+        $request->getParsedBody()->willReturn([[
+            'message_name' => 'foo',
+            'payload' => [],
+            'metadata' => [],
+        ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('Empty event uuid provided', $response->getReasonPhrase());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -131,6 +141,8 @@ class PostStreamTest extends TestCase
         $request->getHeaderLine('Content-Type')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
         $request->getParsedBody()->willReturn([[
             'uuid' => 'invalid',
+            'payload' => [],
+            'metadata' => [],
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -155,6 +167,8 @@ class PostStreamTest extends TestCase
         $request->getHeaderLine('Content-Type')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
         $request->getParsedBody()->willReturn([[
             'uuid' => Uuid::uuid4()->toString(),
+            'payload' => [],
+            'metadata' => [],
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -180,6 +194,8 @@ class PostStreamTest extends TestCase
         $request->getParsedBody()->willReturn([[
             'uuid' => Uuid::uuid4()->toString(),
             'message_name' => '',
+            'payload' => [],
+            'metadata' => [],
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -195,26 +211,33 @@ class PostStreamTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_400_on_missing_event_payload(): void
+    public function it_creates_missing_event_payload(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $messageFactory = $this->prophesize(MessageFactory::class);
+        $eventStore->hasStream(new StreamName('test-stream'))->willReturn(true)->shouldBeCalled();
+        $eventStore->appendTo(
+            new StreamName('test-stream'),
+            Argument::any()
+        )->shouldBeCalled();
+
+        $messageFactory = new GenericEventFactory();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Content-Type')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
+        $request->getAttribute('streamname')->willReturn('test-stream')->shouldBeCalled();
         $request->getParsedBody()->willReturn([[
             'uuid' => Uuid::uuid4()->toString(),
             'message_name' => 'event one',
+            'metadata' => [],
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('Empty event payload provided', $response->getReasonPhrase());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -231,6 +254,7 @@ class PostStreamTest extends TestCase
             'uuid' => Uuid::uuid4()->toString(),
             'message_name' => 'event one',
             'payload' => 'foo',
+            'metadata' => [],
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -246,13 +270,21 @@ class PostStreamTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_400_on_missing_event_metadata(): void
+    public function it_creates_missing_event_metadata(): void
     {
         $eventStore = $this->prophesize(EventStore::class);
-        $messageFactory = $this->prophesize(MessageFactory::class);
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->hasStream(new StreamName('test-stream'))->willReturn(true)->shouldBeCalled();
+        $eventStore->appendTo(
+            new StreamName('test-stream'),
+            Argument::any()
+        )->shouldBeCalled();
+
+        $messageFactory = new GenericEventFactory();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Content-Type')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
+        $request->getAttribute('streamname')->willReturn('test-stream')->shouldBeCalled();
         $request->getParsedBody()->willReturn([[
             'uuid' => Uuid::uuid4()->toString(),
             'message_name' => 'event one',
@@ -261,12 +293,11 @@ class PostStreamTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new PostStream($eventStore->reveal(), $messageFactory->reveal());
+        $action = new PostStream($eventStore->reveal(), $messageFactory);
         $response = $action->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(EmptyResponse::class, $response);
-        $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('Empty event metadata provided', $response->getReasonPhrase());
+        $this->assertSame(204, $response->getStatusCode());
     }
 
     /**
@@ -312,6 +343,7 @@ class PostStreamTest extends TestCase
             'payload' => [],
             'metadata' => [],
             'created_at' => 'invalid',
+
         ]])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);

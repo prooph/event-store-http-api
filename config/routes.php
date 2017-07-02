@@ -17,8 +17,11 @@ use Prooph\EventStore\Http\Api\Action;
  */
 
 /** @var \Zend\Expressive\Application $app */
+
+// event store routes
+
 $app->get(
-    '/streams/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
+    '/stream/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
     Action\LoadStream::class,
     'page::query-stream'
 )
@@ -32,7 +35,7 @@ $app->get(
 );
 
 $app->post(
-    '/streams/{streamname}',
+    '/stream/{streamname}',
     [
         \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
         Action\PostStream::class,
@@ -66,6 +69,34 @@ $app->get(
     Action\HasStream::class,
     'page::has-stream'
 );
+
+$app->get(
+    '/streams[/{filter}[/{limit:[0-9]+}[/{offset:[0-9]+}]]]',
+    Action\FetchStreamNames::class,
+    'page::fetch-stream-names'
+)
+    ->setOptions([
+        'defaults' => [
+            'limit' => 20,
+            'offset' => 0,
+        ],
+    ]
+);
+
+$app->get(
+    '/streams-regex[/{filter}[/{limit:[0-9]+}[/{offset:[0-9]+}]]]',
+    Action\FetchStreamNamesRegex::class,
+    'page::fetch-stream-names-regex'
+)
+    ->setOptions([
+            'defaults' => [
+                'limit' => 20,
+                'offset' => 0,
+            ],
+        ]
+    );
+
+// projection manager routes
 
 $app->get(
     '/projections/fetch-names[/{filter}[/{limit:[0-9]+}/{offset:[0-9]+}]]',

@@ -15,6 +15,9 @@ namespace ProophTest\EventStore\Http\Api\Integration;
 use GuzzleHttp\Psr7\Request;
 use Http\Adapter\Guzzle6\Client;
 
+/**
+ * @group integration
+ */
 class StopProjectionTest extends AbstractHttpApiServerTestCase
 {
     /**
