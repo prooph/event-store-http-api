@@ -68,7 +68,7 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $this->client = new Client();
 
         // wait for server to start
-        usleep(100000);
+        usleep(200000);
     }
 
     protected function tearDown(): void
