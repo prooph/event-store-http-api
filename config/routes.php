@@ -55,7 +55,7 @@ $app->post(
     'page::update-stream-metadata'
 );
 
-$app->get(
+$app->post(
     '/delete/{streamname}',
     Action\DeleteStream::class,
     'page::delete-stream'
@@ -68,7 +68,7 @@ $app->get(
 );
 
 $app->get(
-    '/projections/fetch-names[/{filter}[/limit:[0-9]+][/offset:[0-9]+]]',
+    '/projections/fetch-names[/{filter}[/{limit:[0-9]+}/{offset:[0-9]+}]]',
     Action\FetchProjectionNames::class,
     'page::fetch-projection-names'
 )
@@ -81,7 +81,7 @@ $app->get(
 );
 
 $app->get(
-    '/projections/fetch-names-regex/{filter}[/limit:[0-9]+][/offset:[0-9]+]',
+    '/projections/fetch-names-regex/{filter}[/{limit:[0-9]+}/{offset:[0-9]+}]',
     Action\FetchProjectionNamesRegex::class,
     'page::fetch-projection-names-regex'
 )
@@ -93,21 +93,21 @@ $app->get(
         ]
 );
 
-$app->get(
+$app->post(
     'projection/delete/{name}/deleteEmittedEvents:true|false',
     Action\DeleteProjection::class,
     'page::delete-projection'
 );
 
-$app->get(
+$app->post(
     'projection/reset/{name}',
-    Action\DeleteProjection::class,
+    Action\ResetProjection::class,
     'page::reset-projection'
 );
 
-$app->get(
+$app->post(
     'projection/stop/{name}',
-    Action\DeleteProjection::class,
+    Action\StopProjection::class,
     'page::stop-projection'
 );
 

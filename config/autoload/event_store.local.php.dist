@@ -41,7 +41,7 @@ return [
     'prooph' => [
         'event_store' => [
             'default' => [
-                'connection' => 'pdo_connection'
+                'connection' => 'pdo_connection',
                 'message_factory' => GenericEventFactory::class,
                 // choose one !!!
                 //'persistence_strategy' => MariaDbAggregateStreamStrategy::class,
