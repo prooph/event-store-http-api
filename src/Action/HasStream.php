@@ -14,8 +14,8 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
+use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
@@ -23,7 +23,7 @@ use Zend\Diactoros\Response\EmptyResponse;
 final class HasStream implements MiddlewareInterface
 {
     /**
-     * @var EventStore
+     * @var ReadOnlyEventStore
      */
     private $eventStore;
 
@@ -32,7 +32,7 @@ final class HasStream implements MiddlewareInterface
      */
     private $transformers = [];
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(ReadOnlyEventStore $eventStore)
     {
         $this->eventStore = $eventStore;
     }

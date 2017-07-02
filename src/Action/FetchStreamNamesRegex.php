@@ -14,14 +14,14 @@ namespace Prooph\EventStore\Http\Api\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Prooph\EventStore\Exception\StreamNotFound;
+use Prooph\EventStore\Http\Api\Model\MetadataMatcherBuilder;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
+use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\ReadOnlyEventStore;
-use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class FetchStreamMetadata implements MiddlewareInterface
+final class FetchStreamNamesRegex implements MiddlewareInterface
 {
     /**
      * @var ReadOnlyEventStore
@@ -51,16 +51,18 @@ final class FetchStreamMetadata implements MiddlewareInterface
             return new EmptyResponse(415);
         }
 
-        $streamName = urldecode($request->getAttribute('streamname'));
+        $filter = urldecode($request->getAttribute('filter'));
 
-        try {
-            $metadata = $this->eventStore->fetchStreamMetadata(new StreamName($streamName));
-        } catch (StreamNotFound $e) {
-            return new EmptyResponse(404);
-        }
+        $limit = (int) $request->getAttribute('limit');
+        $offset = (int) $request->getAttribute('offset');
+
+        $metadataMatcherBuilder = new MetadataMatcherBuilder();
+        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request);
+
+        $projectionNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
-        return $transformer->createResponse($metadata);
+        return $transformer->createResponse($projectionNames);
     }
 }
