@@ -37,25 +37,14 @@ final class HasStream implements MiddlewareInterface
         $this->eventStore = $eventStore;
     }
 
-    public function addTransformer(Transformer $transformer, string ...$names)
-    {
-        foreach ($names as $name) {
-            $this->transformers[$name] = $transformer;
-        }
-    }
-
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $streamName = urldecode($request->getAttribute('streamname'));
 
-        if (! array_key_exists($request->getHeaderLine('Accept'), $this->transformers)) {
-            return new EmptyResponse(415);
+        if ($this->eventStore->hasStream(new StreamName($streamName))) {
+            return new EmptyResponse(200);
         }
 
-        $result = $this->eventStore->hasStream(new StreamName($streamName));
-
-        $transformer = $this->transformers[$request->getHeaderLine('Accept')];
-
-        return $transformer->createResponse(['result' => $result]);
+        return new EmptyResponse(404);
     }
 }
