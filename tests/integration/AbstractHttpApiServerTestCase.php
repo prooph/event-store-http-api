@@ -24,6 +24,10 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
     protected function setUp(): void
     {
+        if (! extension_loaded('pcntl')) {
+            $this->markTestSkipped('pcntl extension missing');
+        }
+
         copy(__DIR__ . '/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php');
 
         $connection = TestUtil::getConnection();
@@ -50,12 +54,12 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         $this->projectionPid = $processDetails['pid'];
 
-        sleep(1);
+        usleep(500000);
     }
 
     protected function tearDown(): void
     {
-        posix_kill($this->projectionPid, SIGKILL);
+        posix_kill($this->projectionPid, SIGTERM);
         usleep(500000);
     }
 }
