@@ -19,10 +19,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class MetadataMatcherBuilder
 {
-    public function createMetadataMatcherFrom(ServerRequestInterface $request): MetadataMatcher
+    public function createMetadataMatcherFrom(ServerRequestInterface $request, bool $includeProperties): MetadataMatcher
     {
         $metadata = [];
-        $messageProperty = [];
+
+        if ($includeProperties) {
+            $messageProperty = [];
+        }
 
         foreach ($request->getQueryParams() as $queryParam => $value) {
             $matches = [];
@@ -35,13 +38,13 @@ class MetadataMatcherBuilder
                 $metadata[$matches[1]]['operator'] = Operator::byName($value);
             } elseif (preg_match('/^meta_(\d+)_value$/', $queryParam, $matches)) {
                 $metadata[$matches[1]]['value'] = $value;
-            } elseif (preg_match('/^property_(\d+)_field$/', $queryParam, $matches)) {
+            } elseif ($includeProperties && preg_match('/^property_(\d+)_field$/', $queryParam, $matches)) {
                 $messageProperty[$matches[1]]['field'] = $value;
-            } elseif (preg_match('/^property_(\d+)_operator$/', $queryParam, $matches)
+            } elseif ($includeProperties && preg_match('/^property_(\d+)_operator$/', $queryParam, $matches)
                 && defined(Operator::class . '::' . $value)
             ) {
                 $messageProperty[$matches[1]]['operator'] = Operator::byName($value);
-            } elseif (preg_match('/^property_(\d+)_value$/', $queryParam, $matches)) {
+            } elseif ($includeProperties && preg_match('/^property_(\d+)_value$/', $queryParam, $matches)) {
                 $messageProperty[$matches[1]]['value'] = $value;
             }
         }
@@ -57,6 +60,10 @@ class MetadataMatcherBuilder
                     FieldType::METADATA()
                 );
             }
+        }
+
+        if (! $includeProperties) {
+            return $metadataMatcher;
         }
 
         foreach ($messageProperty as $key => $match) {

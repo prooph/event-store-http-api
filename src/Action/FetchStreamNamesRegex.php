@@ -56,7 +56,7 @@ final class FetchStreamNamesRegex implements MiddlewareInterface
         $offset = (int) $request->getAttribute('offset');
 
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
-        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request);
+        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, false);
 
         $projectionNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
 

@@ -90,7 +90,7 @@ final class LoadStream implements MiddlewareInterface
         }
 
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
-        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request);
+        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, true);
 
         try {
             if ($direction === 'backward') {
@@ -154,10 +154,6 @@ final class LoadStream implements MiddlewareInterface
         ];
 
         return $transformer->createResponse($result);
-    }
-
-    private function buildMetadataMatcher(ServerRequestInterface $request): MetadataMatcher
-    {
     }
 
     private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse

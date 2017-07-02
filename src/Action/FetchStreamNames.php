@@ -60,7 +60,7 @@ final class FetchStreamNames implements MiddlewareInterface
         $offset = (int) $request->getAttribute('offset');
 
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
-        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request);
+        $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, false);
 
         $projectionNames = $this->eventStore->fetchStreamNames($filter, $metadataMatcher, $limit, $offset);
 
