@@ -55,6 +55,6 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
     protected function tearDown(): void
     {
-        posix_kill($this->projectionPid, SIGQUIT);
+        posix_kill($this->projectionPid, SIGKILL);
     }
 }
