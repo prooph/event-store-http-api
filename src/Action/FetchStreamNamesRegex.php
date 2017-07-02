@@ -16,7 +16,6 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\EventStore\Http\Api\Model\MetadataMatcherBuilder;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
-use Prooph\EventStore\Projection\ProjectionManager;
 use Prooph\EventStore\ReadOnlyEventStore;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;

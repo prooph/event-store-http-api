@@ -18,9 +18,7 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\EventStore\Exception\StreamNotFound;
 use Prooph\EventStore\Http\Api\Model\MetadataMatcherBuilder;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
-use Prooph\EventStore\Metadata\FieldType;
 use Prooph\EventStore\Metadata\MetadataMatcher;
-use Prooph\EventStore\Metadata\Operator;
 use Prooph\EventStore\ReadOnlyEventStore;
 use Prooph\EventStore\StreamName;
 use Psr\Http\Message\ResponseInterface;
@@ -160,7 +158,6 @@ final class LoadStream implements MiddlewareInterface
 
     private function buildMetadataMatcher(ServerRequestInterface $request): MetadataMatcher
     {
-
     }
 
     private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse

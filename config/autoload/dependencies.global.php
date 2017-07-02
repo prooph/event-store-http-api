@@ -64,6 +64,8 @@ return [
             Action\FetchProjectionStatus::class => Container\Action\FetchProjectionStatusFactory::class,
             Action\FetchProjectionStreamPositions::class => Container\Action\FetchProjectionStreamPositionsFactory::class,
             Action\FetchStreamMetadata::class => Container\Action\FetchStreamMetadataFactory::class,
+            Action\FetchStreamNames::class => Container\Action\FetchStreamNamesFactory::class,
+            Action\FetchStreamNamesRegex::class => Container\Action\FetchStreamNamesRegexFactory::class,
             Action\HasStream::class => Container\Action\HasStreamFactory::class,
             Action\LoadStream::class => Container\Action\LoadStreamFactory::class,
             Action\PostStream::class => Container\Action\PostStreamFactory::class,
