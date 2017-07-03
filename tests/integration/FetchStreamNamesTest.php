@@ -71,7 +71,7 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
         // test fetch all streams from offset 10
         $request = new Request(
             'GET',
-            'http://localhost:8080/streams/10/10',
+            'http://localhost:8080/streams?limit=10&offset=10',
             [
                 'Accept' => 'application/json',
             ]
@@ -79,10 +79,10 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        // test fetch stream with regex ^foo
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('[]', $response->getBody()->getContents());
 
+        // test fetch stream with regex ^foo
         $request = new Request(
             'GET',
             'http://localhost:8080/streams-regex/^foo',

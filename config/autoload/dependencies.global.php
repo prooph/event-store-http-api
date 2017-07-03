@@ -58,6 +58,8 @@ return [
             // actions
             Action\DeleteProjection::class => Container\Action\DeleteProjectionFactory::class,
             Action\DeleteStream::class => Container\Action\DeleteStreamFactory::class,
+            Action\FetchCategoryNames::class => Container\Action\FetchCategoryNamesFactory::class,
+            Action\FetchCategoryNamesRegex::class => Container\Action\FetchCategoryNamesRegexFactory::class,
             Action\FetchProjectionNames::class => Container\Action\FetchProjectionNamesFactory::class,
             Action\FetchProjectionNamesRegex::class => Container\Action\FetchProjectionNamesRegexFactory::class,
             Action\FetchProjectionState::class => Container\Action\FetchProjectionStateFactory::class,

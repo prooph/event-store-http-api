@@ -21,6 +21,9 @@ use Zend\Diactoros\Response\EmptyResponse;
 
 final class FetchProjectionNamesRegex implements MiddlewareInterface
 {
+    private const DEFAULT_LIMIT = 20;
+    private const DEFAULT_OFFSET = 0;
+
     /**
      * @var ProjectionManager
      */
@@ -51,10 +54,12 @@ final class FetchProjectionNamesRegex implements MiddlewareInterface
 
         $filter = urldecode($request->getAttribute('filter'));
 
-        $limit = (int) $request->getAttribute('limit');
-        $offset = (int) $request->getAttribute('offset');
+        $queryParams = $request->getQueryParams();
 
-        $projectionNames = $this->projectionManager->fetchProjectionNamesRegex($filter, $limit, $offset);
+        $limit = $queryParams['limit'] ?? self::DEFAULT_LIMIT;
+        $offset = $queryParams['offset'] ?? self::DEFAULT_OFFSET;
+
+        $projectionNames = $this->projectionManager->fetchProjectionNamesRegex($filter, (int) $limit, (int) $offset);
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 

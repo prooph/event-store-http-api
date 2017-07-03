@@ -14,28 +14,28 @@ namespace ProophTest\EventStore\Http\Api\Unit\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
-use Prooph\EventStore\Http\Api\Action\FetchProjectionNames;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Http\Api\Action\FetchCategoryNames;
 use Prooph\EventStore\Http\Api\Transformer\JsonTransformer;
-use Prooph\EventStore\Projection\ProjectionManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
 
-class FetchProjectionNamesTest extends TestCase
+class FetchCategoryNamesTest extends TestCase
 {
     /**
      * @test
      */
     public function it_returns_415_when_invalid_accept_header_sent(): void
     {
-        $projectionManager = $this->prophesize(ProjectionManager::class);
+        $eventStore = $this->prophesize(EventStore::class);
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new FetchProjectionNames($projectionManager->reveal());
+        $action = new FetchCategoryNames($eventStore->reveal());
         $action->addTransformer(new JsonTransformer(), 'application/atom+json');
 
         $response = $action->process($request->reveal(), $delegate->reveal());
@@ -47,10 +47,13 @@ class FetchProjectionNamesTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_filtered_projection_names(): void
+    public function it_returns_filtered_category_names(): void
     {
-        $projectionManager = $this->prophesize(ProjectionManager::class);
-        $projectionManager->fetchProjectionNames('foo', 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore
+            ->fetchCategoryNames('foo', 20, 0)
+            ->willReturn(['foo', 'foobar'])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
@@ -59,7 +62,7 @@ class FetchProjectionNamesTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new FetchProjectionNames($projectionManager->reveal());
+        $action = new FetchCategoryNames($eventStore->reveal());
         $action->addTransformer(new JsonTransformer(), 'application/atom+json');
 
         $response = $action->process($request->reveal(), $delegate->reveal());
@@ -72,10 +75,13 @@ class FetchProjectionNamesTest extends TestCase
     /**
      * @test
      */
-    public function it_will_return_all_projection_names_without_filter(): void
+    public function it_will_return_all_category_names_without_filter(): void
     {
-        $projectionManager = $this->prophesize(ProjectionManager::class);
-        $projectionManager->fetchProjectionNames(null, 20, 0)->willReturn(['foo', 'foobar'])->shouldBeCalled();
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore
+            ->fetchCategoryNames(null, 20, 0)
+            ->willReturn(['foo', 'foobar'])
+            ->shouldBeCalled();
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
@@ -84,7 +90,7 @@ class FetchProjectionNamesTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
-        $action = new FetchProjectionNames($projectionManager->reveal());
+        $action = new FetchCategoryNames($eventStore->reveal());
         $action->addTransformer(new JsonTransformer(), 'application/atom+json');
 
         $response = $action->process($request->reveal(), $delegate->reveal());

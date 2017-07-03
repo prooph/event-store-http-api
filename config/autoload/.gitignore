@@ -1,2 +1,3 @@
 local.php
 *.local.php
+event_store.local.php.copy

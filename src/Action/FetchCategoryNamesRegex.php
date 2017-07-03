@@ -15,28 +15,28 @@ namespace Prooph\EventStore\Http\Api\Action;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Prooph\EventStore\Http\Api\Transformer\Transformer;
-use Prooph\EventStore\Projection\ProjectionManager;
+use Prooph\EventStore\ReadOnlyEventStore;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
-final class FetchProjectionNames implements MiddlewareInterface
+final class FetchCategoryNamesRegex implements MiddlewareInterface
 {
     private const DEFAULT_LIMIT = 20;
     private const DEFAULT_OFFSET = 0;
 
     /**
-     * @var ProjectionManager
+     * @var ReadOnlyEventStore
      */
-    private $projectionManager;
+    private $eventStore;
 
     /**
      * @var Transformer[]
      */
     private $transformers = [];
 
-    public function __construct(ProjectionManager $projectionManager)
+    public function __construct(ReadOnlyEventStore $eventStore)
     {
-        $this->projectionManager = $projectionManager;
+        $this->eventStore = $eventStore;
     }
 
     public function addTransformer(Transformer $transformer, string ...$names)
@@ -52,21 +52,17 @@ final class FetchProjectionNames implements MiddlewareInterface
             return new EmptyResponse(415);
         }
 
-        $filter = $request->getAttribute('filter');
-
-        if (null !== $filter) {
-            $filter = urldecode($filter);
-        }
+        $filter = urldecode($request->getAttribute('filter'));
 
         $queryParams = $request->getQueryParams();
 
         $limit = $queryParams['limit'] ?? self::DEFAULT_LIMIT;
         $offset = $queryParams['offset'] ?? self::DEFAULT_OFFSET;
 
-        $projectionNames = $this->projectionManager->fetchProjectionNames($filter, (int) $limit, (int) $offset);
+        $categoryNames = $this->eventStore->fetchCategoryNamesRegex($filter, (int) $limit, (int) $offset);
 
         $transformer = $this->transformers[$request->getHeaderLine('Accept')];
 
-        return $transformer->createResponse($projectionNames);
+        return $transformer->createResponse($categoryNames);
     }
 }

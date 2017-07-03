@@ -72,14 +72,13 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $this->client = new Client();
 
         // wait for server to start
-        usleep(200000);
+        usleep(100000);
     }
 
     protected function tearDown(): void
     {
         posix_kill($this->projectionPid, SIGTERM);
-        // wait for server to stop
-        usleep(100000);
+
         // remove server config
         unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
 
@@ -98,6 +97,9 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         // drop teststream table
         $statement = $this->connection->prepare('DROP TABLE IF EXISTS _eeaa111d0c71f10112decea3f1330e9853abe6e3;');
         $statement->execute();
+
+        // wait for server to stop
+        usleep(50000);
     }
 
     protected function createTestStream(): void

@@ -23,6 +23,9 @@ use Zend\Diactoros\Response\EmptyResponse;
 
 final class FetchStreamNames implements MiddlewareInterface
 {
+    private const DEFAULT_LIMIT = 20;
+    private const DEFAULT_OFFSET = 0;
+
     /**
      * @var ReadOnlyEventStore
      */
@@ -57,13 +60,15 @@ final class FetchStreamNames implements MiddlewareInterface
             $filter = urldecode($filter);
         }
 
-        $limit = (int) $request->getAttribute('limit');
-        $offset = (int) $request->getAttribute('offset');
+        $queryParams = $request->getQueryParams();
+
+        $limit = $queryParams['limit'] ?? self::DEFAULT_LIMIT;
+        $offset = $queryParams['offset'] ?? self::DEFAULT_OFFSET;
 
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
         $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, false);
 
-        $streamNames = $this->eventStore->fetchStreamNames($filter, $metadataMatcher, $limit, $offset);
+        $streamNames = $this->eventStore->fetchStreamNames($filter, $metadataMatcher, (int) $limit, (int) $offset);
 
         $streamNames = array_map(
             function (StreamName $streamName): string {

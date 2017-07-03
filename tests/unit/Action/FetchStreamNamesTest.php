@@ -62,8 +62,6 @@ class FetchStreamNamesTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
         $request->getAttribute('filter')->willReturn('foo')->shouldBeCalled();
-        $request->getAttribute('limit')->willReturn('20')->shouldBeCalled();
-        $request->getAttribute('offset')->willReturn('0')->shouldBeCalled();
         $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -92,8 +90,6 @@ class FetchStreamNamesTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
         $request->getAttribute('filter')->willReturn(null)->shouldBeCalled();
-        $request->getAttribute('limit')->willReturn('20')->shouldBeCalled();
-        $request->getAttribute('offset')->willReturn('0')->shouldBeCalled();
         $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
@@ -125,8 +121,6 @@ class FetchStreamNamesTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
         $request->getAttribute('filter')->willReturn(null)->shouldBeCalled();
-        $request->getAttribute('limit')->willReturn('20')->shouldBeCalled();
-        $request->getAttribute('offset')->willReturn('0')->shouldBeCalled();
         $request->getQueryParams()->willReturn([
             'meta_0_field' => 'foo',
             'meta_0_operator' => 'EQUALS',

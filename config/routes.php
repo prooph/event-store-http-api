@@ -71,61 +71,45 @@ $app->get(
 );
 
 $app->get(
-    '/streams[/{filter}[/{limit:[0-9]+}[/{offset:[0-9]+}]]]',
+    '/streams[/{filter}]',
     Action\FetchStreamNames::class,
     'page::fetch-stream-names'
-)
-    ->setOptions([
-        'defaults' => [
-            'limit' => 20,
-            'offset' => 0,
-        ],
-    ]
 );
 
 $app->get(
-    '/streams-regex[/{filter}[/{limit:[0-9]+}[/{offset:[0-9]+}]]]',
+    '/streams-regex/{filter}',
     Action\FetchStreamNamesRegex::class,
     'page::fetch-stream-names-regex'
-)
-    ->setOptions([
-            'defaults' => [
-                'limit' => 20,
-                'offset' => 0,
-            ],
-        ]
-    );
+);
+
+$app->get(
+    '/categories[/{filter}]',
+    Action\FetchCategoryNames::class,
+    'page::fetch-category-names'
+);
+
+$app->get(
+    '/categories-regex/{filter}',
+    Action\FetchCategoryNamesRegex::class,
+    'page::fetch-category-names-regex'
+);
 
 // projection manager routes
 
 $app->get(
-    '/projections/fetch-names[/{filter}[/{limit:[0-9]+}/{offset:[0-9]+}]]',
+    '/projections/fetch-names[/{filter}]',
     Action\FetchProjectionNames::class,
     'page::fetch-projection-names'
-)
-    ->setOptions([
-        'defaults' => [
-            'limit' => 20,
-            'offet' => 0,
-        ],
-    ]
 );
 
 $app->get(
-    '/projections/fetch-names-regex/{filter}[/{limit:[0-9]+}/{offset:[0-9]+}]',
+    '/projections/fetch-names-regex/{filter}',
     Action\FetchProjectionNamesRegex::class,
     'page::fetch-projection-names-regex'
-)
-    ->setOptions([
-            'defaults' => [
-                'limit' => 20,
-                'offet' => 0,
-            ],
-        ]
 );
 
 $app->post(
-    'projection/delete/{name}/deleteEmittedEvents:true|false',
+    'projection/delete/{name}/{deleteEmittedEvents:true|false}',
     Action\DeleteProjection::class,
     'page::delete-projection'
 );

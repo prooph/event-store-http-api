@@ -55,8 +55,7 @@ class FetchProjectionNamesRegexTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getHeaderLine('Accept')->willReturn('application/atom+json')->shouldBeCalled();
         $request->getAttribute('filter')->willReturn(urlencode('^foo$'))->shouldBeCalled();
-        $request->getAttribute('limit')->willReturn('20')->shouldBeCalled();
-        $request->getAttribute('offset')->willReturn('0')->shouldBeCalled();
+        $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 

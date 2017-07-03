@@ -27,7 +27,7 @@ class DeleteProjectionTest extends AbstractHttpApiServerTestCase
     {
         $client = new Client();
 
-        $request = new Request('POST', 'http://localhost:8080/projection/delete/unknown/deleteEmittedEvents/true');
+        $request = new Request('POST', 'http://localhost:8080/projection/delete/unknown/true');
 
         $response = $client->sendRequest($request);
 

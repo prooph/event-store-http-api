@@ -23,6 +23,9 @@ use Zend\Diactoros\Response\EmptyResponse;
 
 final class FetchStreamNamesRegex implements MiddlewareInterface
 {
+    private const DEFAULT_LIMIT = 20;
+    private const DEFAULT_OFFSET = 0;
+
     /**
      * @var ReadOnlyEventStore
      */
@@ -53,13 +56,15 @@ final class FetchStreamNamesRegex implements MiddlewareInterface
 
         $filter = urldecode($request->getAttribute('filter'));
 
-        $limit = (int) $request->getAttribute('limit');
-        $offset = (int) $request->getAttribute('offset');
+        $queryParams = $request->getQueryParams();
+
+        $limit = $queryParams['limit'] ?? self::DEFAULT_LIMIT;
+        $offset = $queryParams['offset'] ?? self::DEFAULT_OFFSET;
 
         $metadataMatcherBuilder = new MetadataMatcherBuilder();
         $metadataMatcher = $metadataMatcherBuilder->createMetadataMatcherFrom($request, false);
 
-        $streamNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, $limit, $offset);
+        $streamNames = $this->eventStore->fetchStreamNamesRegex($filter, $metadataMatcher, (int) $limit, (int) $offset);
 
         $streamNames = array_map(
             function (StreamName $streamName): string {
