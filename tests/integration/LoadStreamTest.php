@@ -26,7 +26,13 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
     {
         $this->createTestStream();
 
-        // test load without accept header
+        $this->loadWithoutAcceptHeader();
+
+        $this->simpleLoad();
+    }
+
+    private function loadWithoutAcceptHeader(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/stream/teststream'
@@ -46,8 +52,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame('Description document for \'teststream\'', $data['title']);
         $this->assertSame('The description document will be presented when no accept header is present or it was requested', $data['description']);
+    }
 
-        // test simple load
+    private function simpleLoad(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/stream/teststream',
@@ -75,5 +83,23 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
         $this->assertSame('Event stream \'teststream\'', $data['title']);
         $this->assertSame('http://localhost:8080/stream/teststream/1/forward/10', $data['id']);
         $this->assertSame('teststream', $data['streamName']);
+        $this->assertSame(
+            [
+                [
+                    'uri' => 'http://localhost:8080/stream/teststream/1/forward/10',
+                    'relation' => 'self',
+                ],
+                [
+                    'uri' => 'http://localhost:8080/stream/teststream/1/forward/10',
+                    'relation' => 'first',
+                ],
+                [
+                    'uri' => 'http://localhost:8080/stream/teststream/head/backward/10',
+                    'relation' => 'last',
+                ],
+            ],
+            $data['_links']
+        );
+        $this->assertCount(3, $data['entries']);
     }
 }
