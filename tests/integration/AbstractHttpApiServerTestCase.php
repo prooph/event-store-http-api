@@ -71,8 +71,24 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         $this->client = new Client();
 
-        // wait for server to start
-        usleep(100000);
+        $failed = 0;
+        $attempts = 0;
+
+        do {
+            $resource = @fsockopen('localhost', 8080, $failed);
+
+            if (is_resource($resource)) {
+                break;
+            }
+
+            if (10 === $attempts) {
+                proc_terminate($process);
+                $this->markTestSkipped('The stub server did not load in time (500ms).');
+            }
+
+            $attempts++;
+            usleep(50000);
+        } while (true);
     }
 
     protected function tearDown(): void
@@ -98,8 +114,23 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $statement = $this->connection->prepare('DROP TABLE IF EXISTS _eeaa111d0c71f10112decea3f1330e9853abe6e3;');
         $statement->execute();
 
-        // wait for server to stop
-        usleep(50000);
+        $failed = 0;
+        $attempts = 0;
+
+        do {
+            $resource = @fsockopen('localhost', 8080, $failed);
+
+            if (false === $resource) {
+                break;
+            }
+
+            if (10 === $attempts) {
+                $this->fail('The stub server did not shut down in time (500ms).');
+            }
+
+            $attempts++;
+            usleep(50000);
+        } while (true);
     }
 
     protected function createTestStream(): void
