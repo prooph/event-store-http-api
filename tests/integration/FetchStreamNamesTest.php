@@ -26,7 +26,21 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
     {
         $this->createTestStream();
 
-        // test fetch all stream
+        $this->fetchAllStreams();
+
+        $this->fetchStreamWithName();
+
+        $this->fetchUnknownStreamWithName();
+
+        $this->fetchStreamsFromOffset();
+
+        $this->fetchStreamsRegex();
+
+        $this->fetchUnknownStreamsRegex();
+    }
+
+    private function fetchAllStreams(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/streams',
@@ -39,8 +53,10 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["teststream"]', $response->getBody()->getContents());
+    }
 
-        // test fetch stream with name teststream
+    private function fetchStreamWithName(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/streams/teststream',
@@ -53,8 +69,10 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["teststream"]', $response->getBody()->getContents());
+    }
 
-        // test fetch stream with name foo
+    private function fetchUnknownStreamWithName(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/streams/foo',
@@ -67,8 +85,10 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('[]', $response->getBody()->getContents());
+    }
 
-        // test fetch all streams from offset 10
+    private function fetchStreamsFromOffset(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/streams?limit=10&offset=10',
@@ -81,22 +101,10 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('[]', $response->getBody()->getContents());
+    }
 
-        // test fetch stream with regex ^foo
-        $request = new Request(
-            'GET',
-            'http://localhost:8080/streams-regex/^foo',
-            [
-                'Accept' => 'application/json',
-            ]
-        );
-
-        $response = $this->client->sendRequest($request);
-
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
-
-        // test fetch stream with regex ^test
+    private function fetchStreamsRegex(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/streams-regex/^test',
@@ -109,5 +117,21 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["teststream"]', $response->getBody()->getContents());
+    }
+
+    private function fetchUnknownStreamsRegex(): void
+    {
+        $request = new Request(
+            'GET',
+            'http://localhost:8080/streams-regex/^foo',
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('[]', $response->getBody()->getContents());
     }
 }
