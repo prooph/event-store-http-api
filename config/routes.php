@@ -23,7 +23,7 @@ use Prooph\EventStore\Http\Api\Action;
 $app->get(
     '/stream/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
     Action\LoadStream::class,
-    'page::query-stream'
+    'EventStore::load'
 )
     ->setOptions([
         'defaults' => [
@@ -40,13 +40,13 @@ $app->post(
         \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
         Action\PostStream::class,
     ],
-    'page::post-stream'
+    'EventStore::appendTo'
 );
 
 $app->get(
     '/streammetadata/{streamname}',
     Action\FetchStreamMetadata::class,
-    'page::fetch-stream-metadata'
+    'EventStore::fetchStreamMetadata'
 );
 
 $app->post(
@@ -55,91 +55,91 @@ $app->post(
         \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
         Action\UpdateStreamMetadata::class,
     ],
-    'page::update-stream-metadata'
+    'EventStore::updateStreamMetadata'
 );
 
 $app->post(
     '/delete/{streamname}',
     Action\DeleteStream::class,
-    'page::delete-stream'
+    'EventStore::delete'
 );
 
 $app->get(
     '/has-stream/{streamname}',
     Action\HasStream::class,
-    'page::has-stream'
+    'EventStore::hasStream'
 );
 
 $app->get(
     '/streams[/{filter}]',
     Action\FetchStreamNames::class,
-    'page::fetch-stream-names'
+    'EventStore::fetchStreamNames'
 );
 
 $app->get(
     '/streams-regex/{filter}',
     Action\FetchStreamNamesRegex::class,
-    'page::fetch-stream-names-regex'
+    'EventStore::fetchStreamNamesRegex'
 );
 
 $app->get(
     '/categories[/{filter}]',
     Action\FetchCategoryNames::class,
-    'page::fetch-category-names'
+    'EventStore::fetchCategoryNames'
 );
 
 $app->get(
     '/categories-regex/{filter}',
     Action\FetchCategoryNamesRegex::class,
-    'page::fetch-category-names-regex'
+    'EventStore::fetchCategoryNamesRegex'
 );
 
 // projection manager routes
 
 $app->get(
-    '/projections/fetch-names[/{filter}]',
+    '/projections[/{filter}]',
     Action\FetchProjectionNames::class,
-    'page::fetch-projection-names'
+    'ProjectionManager::fetchProjectionNames'
 );
 
 $app->get(
-    '/projections/fetch-names-regex/{filter}',
+    '/projections-regex/{filter}',
     Action\FetchProjectionNamesRegex::class,
-    'page::fetch-projection-names-regex'
+    'ProjectionManager::fetchProjectionNamesRegex'
 );
 
 $app->post(
     'projection/delete/{name}/{deleteEmittedEvents:true|false}',
     Action\DeleteProjection::class,
-    'page::delete-projection'
+    'ProjectionManager::deleteProjection'
 );
 
 $app->post(
     'projection/reset/{name}',
     Action\ResetProjection::class,
-    'page::reset-projection'
+    'ProjectionManager::resetProjection'
 );
 
 $app->post(
     'projection/stop/{name}',
     Action\StopProjection::class,
-    'page::stop-projection'
+    'ProjectionManager::stopProjection'
 );
 
 $app->get(
     'projection/status/{name}',
     Action\FetchProjectionStatus::class,
-    'page::fetch-projection-status'
+    'ProjectionManager::fetchProjectionStatus'
 );
 
 $app->get(
     'projection/state/{name}',
     Action\FetchProjectionState::class,
-    'page::fetch-projection-state'
+    'ProjectionManager::fetchProjectionState'
 );
 
 $app->get(
     'projection/stream-positions/{name}',
     Action\FetchProjectionStreamPositions::class,
-    'page::fetch-projection-stream-positions'
+    'ProjectionManager::fetchProjectionStreamPositions'
 );

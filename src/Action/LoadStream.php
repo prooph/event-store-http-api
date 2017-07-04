@@ -117,7 +117,7 @@ final class LoadStream implements MiddlewareInterface
 
         $host = $this->host($request);
 
-        $id = $host . $this->urlHelper->generate('page::query-stream', [
+        $id = $host . $this->urlHelper->generate('EventStore::load', [
             'streamname' => urlencode($streamName),
         ]);
 
@@ -125,13 +125,13 @@ final class LoadStream implements MiddlewareInterface
             'title' => "Event stream '$streamName'",
             'id' => $id,
             'streamName' => $streamName,
-            'links' => [
+            '_links' => [
                 [
                     'uri' => $id,
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                    'uri' => $host . $this->urlHelper->generate('EventStore::load', [
                         'streamname' => urlencode($streamName),
                         'start' => '1',
                         'direction' => 'forward',
@@ -140,7 +140,7 @@ final class LoadStream implements MiddlewareInterface
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => $host . $this->urlHelper->generate('page::query-stream', [
+                    'uri' => $host . $this->urlHelper->generate('EventStore::load', [
                         'streamname' => urlencode($streamName),
                         'start' => 'head',
                         'direction' => 'backward',
@@ -157,7 +157,7 @@ final class LoadStream implements MiddlewareInterface
 
     private function returnDescription(ServerRequestInterface $request, string $streamName): JsonResponse
     {
-        $id = $this->host($request) . $this->urlHelper->generate('page::query-stream', [
+        $id = $this->host($request) . $this->urlHelper->generate('EventStore::load', [
             'streamname' => urlencode($streamName),
         ]);
 

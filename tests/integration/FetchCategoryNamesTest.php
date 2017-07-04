@@ -41,7 +41,17 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
     {
         $this->createTestStreams();
 
-        // test fetch all categories
+        $this->fetchAllCategories();
+
+        $this->fetchCategoriesFromOffset();
+
+        $this->fetchCategoriesRegex();
+
+        $this->fetchCategoriesFromOffset();
+    }
+
+    private function fetchAllCategories(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/categories',
@@ -68,8 +78,10 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["user"]', $response->getBody()->getContents());
+    }
 
-        // test fetch all streams from offset 1
+    private function fetchCategoriesFromOffset(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/categories?limit=10&offset=1',
@@ -82,8 +94,10 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["user"]', $response->getBody()->getContents());
+    }
 
-        // test fetch stream with regex ^foo
+    private function fetchCategoriesRegex(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/categories-regex/^user',
@@ -96,8 +110,10 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('["user"]', $response->getBody()->getContents());
+    }
 
-        // test fetch stream with regex ^user|blog and offset
+    private function fetchCategoriesRegexFromOffset(): void
+    {
         $request = new Request(
             'GET',
             'http://localhost:8080/categories-regex/^user|blog?limit=10&offset=1',
