@@ -152,16 +152,16 @@ class LoadStreamTest extends TestCase
         $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
         ])->willReturn('/streams/foo')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
         ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
@@ -289,16 +289,16 @@ class LoadStreamTest extends TestCase
         $request->getQueryParams()->willReturn([])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
         ])->willReturn('/streams/foo')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
         ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
@@ -502,16 +502,16 @@ class LoadStreamTest extends TestCase
         ])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
         ])->willReturn('/streams/foo')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
         ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
@@ -626,16 +626,16 @@ class LoadStreamTest extends TestCase
         ])->shouldBeCalled();
 
         $urlHelper = $this->prophesize(UrlHelper::class);
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
         ])->willReturn('/streams/foo')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
         ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
-        $urlHelper->generate('page::query-stream', [
+        $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
