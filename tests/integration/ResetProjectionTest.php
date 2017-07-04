@@ -25,11 +25,9 @@ class ResetProjectionTest extends AbstractHttpApiServerTestCase
      */
     public function it_receives_error_resettig_non_existing_projection(): void
     {
-        $client = new Client();
-
         $request = new Request('POST', 'http://localhost:8080/projection/reset/unknown');
 
-        $response = $client->sendRequest($request);
+        $response = $this->client->sendRequest($request);
 
         $this->assertSame(404, $response->getStatusCode());
     }
