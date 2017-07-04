@@ -186,7 +186,7 @@ class LoadStreamTest extends TestCase
             'title' => 'Event stream \'foo\'',
             'id' => 'http://localhost:8080/streams/foo',
             'streamName' => 'foo',
-            'links' => [
+            '_links' => [
                 [
                     'uri' => 'http://localhost:8080/streams/foo',
                     'relation' => 'self',
@@ -323,7 +323,7 @@ class LoadStreamTest extends TestCase
             'title' => 'Event stream \'foo\'',
             'id' => 'http://localhost:8080/streams/foo',
             'streamName' => 'foo',
-            'links' => [
+            '_links' => [
                 [
                     'uri' => 'http://localhost:8080/streams/foo',
                     'relation' => 'self',
@@ -536,7 +536,7 @@ class LoadStreamTest extends TestCase
             'title' => 'Event stream \'foo\'',
             'id' => 'http://localhost:8080/streams/foo',
             'streamName' => 'foo',
-            'links' => [
+            '_links' => [
                 [
                     'uri' => 'http://localhost:8080/streams/foo',
                     'relation' => 'self',
@@ -660,7 +660,7 @@ class LoadStreamTest extends TestCase
             'title' => 'Event stream \'foo\'',
             'id' => 'http://localhost:8080/streams/foo',
             'streamName' => 'foo',
-            'links' => [
+            '_links' => [
                 [
                     'uri' => 'http://localhost:8080/streams/foo',
                     'relation' => 'self',
