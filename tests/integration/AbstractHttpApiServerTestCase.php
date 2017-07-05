@@ -22,7 +22,17 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
     /**
      * @var int
      */
+    protected $serverPid;
+
+    /**
+     * @var int|null
+     */
     protected $projectionPid;
+
+    /**
+     * @var int|null
+     */
+    protected $readModelProjectionPid;
 
     /**
      * @var \PDO
@@ -63,7 +73,7 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         $processDetails = proc_get_status($process);
 
-        $this->projectionPid = $processDetails['pid'];
+        $this->serverPid = $processDetails['pid'];
 
         $this->connection = TestUtil::getConnection();
 
@@ -93,7 +103,17 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
     protected function tearDown(): void
     {
-        posix_kill($this->projectionPid, SIGTERM);
+        if ($this->projectionPid) {
+            posix_kill($this->projectionPid, SIGKILL);
+            $this->projectionPid = null;
+        }
+
+        if ($this->readModelProjectionPid) {
+            posix_kill($this->readModelProjectionPid, SIGKILL);
+            $this->readModelProjectionPid = null;
+        }
+
+        posix_kill($this->serverPid, SIGTERM);
 
         // remove server config
         unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
@@ -167,5 +187,45 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $response = $this->client->sendRequest($request);
 
         $this->assertSame(204, $response->getStatusCode());
+    }
+
+    protected function createProjection(): void
+    {
+        $command = 'exec php ' . __DIR__ . '/projection.php';
+
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $process = proc_open($command, $descriptorSpec, $pipes);
+
+        $processDetails = proc_get_status($process);
+
+        $this->projectionPid = $processDetails['pid'];
+
+        // wait for projection to start
+        usleep(100000);
+    }
+
+    protected function createReadModelProjection(): void
+    {
+        $command = 'exec php ' . __DIR__ . '/readmodel-projection.php';
+
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['file', '/tmp/aa', 'w'],
+            2 => ['pipe', '/tmp/ab', 'w'],
+        ];
+
+        $process = proc_open($command, $descriptorSpec, $pipes);
+
+        $processDetails = proc_get_status($process);
+
+        $this->readModelProjectionPid = $processDetails['pid'];
+
+        // wait for projection to start
+        usleep(100000);
     }
 }
