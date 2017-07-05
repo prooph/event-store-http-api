@@ -168,23 +168,4 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         $this->assertSame(204, $response->getStatusCode());
     }
-
-    public function updateStreamMetadata(): void
-    {
-        $request = new Request(
-            'POST',
-            'http://localhost:8080/streammetadata/teststream',
-            [
-                'Content-Type' => 'application/vnd.eventstore.atom+json',
-            ],
-            '[
-              {"foo": "bar"},
-              {"foobar": "baz"}
-            ]'
-        );
-
-        $response = $this->client->sendRequest($request);
-
-        $this->assertSame(204, $response->getStatusCode());
-    }
 }
