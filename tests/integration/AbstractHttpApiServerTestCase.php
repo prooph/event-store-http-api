@@ -204,9 +204,6 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $processDetails = proc_get_status($process);
 
         $this->projectionPid = $processDetails['pid'];
-
-        // wait for projection to start
-        usleep(100000);
     }
 
     protected function createReadModelProjection(): void
@@ -224,8 +221,10 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $processDetails = proc_get_status($process);
 
         $this->readModelProjectionPid = $processDetails['pid'];
+    }
 
-        // wait for projection to start
+    protected function waitForProjectionsToStart(): void
+    {
         usleep(100000);
     }
 }

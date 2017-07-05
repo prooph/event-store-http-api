@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Http\Api\Integration;
 
 use GuzzleHttp\Psr7\Request;
-use Http\Adapter\Guzzle6\Client;
 
 /**
  * @group integration
@@ -30,5 +29,29 @@ class ResetProjectionTest extends AbstractHttpApiServerTestCase
         $response = $this->client->sendRequest($request);
 
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_stops_existing_projections(): void
+    {
+        $this->createProjection();
+
+        $this->createReadModelProjection();
+
+        $this->waitForProjectionsToStart();
+
+        $request = new Request('POST', 'http://localhost:8080/projection/reset/test-projection');
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
+
+        $request = new Request('POST', 'http://localhost:8080/projection/reset/test-readmodel-projection');
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
