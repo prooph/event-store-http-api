@@ -10,23 +10,32 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Http\Api;
+namespace ProophTest\EventStore\Http\Api\Integration;
 
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Prooph\Common\Messaging\FQCNMessageFactory;
+use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Http\Api\GenericEventFactory;
 use Prooph\EventStore\Pdo\Container\PdoConnectionFactory;
 use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
 use Prooph\EventStore\Pdo\Container\PostgresProjectionManagerFactory;
 use Prooph\EventStore\Pdo\PersistenceStrategy\PostgresSimpleStreamStrategy;
 use Prooph\EventStore\Projection\ProjectionManager;
+use Prooph\EventStore\Projection\Projector;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use Zend\ServiceManager\ServiceManager;
 
-return [
+$config = [
     'dependencies' => [
         'factories' => [
             EventStore::class => PostgresEventStoreFactory::class,
+            ProjectionManager::class => PostgresProjectionManagerFactory::class,
             'pdo_connection' => PdoConnectionFactory::class,
             PostgresSimpleStreamStrategy::class => InvokableFactory::class,
-            ProjectionManager::class => PostgresProjectionManagerFactory::class,
+            GenericEventFactory::class => InvokableFactory::class,
+            FQCNMessageFactory::class => GenericEventFactory::class,
         ],
     ],
     'prooph' => [
@@ -55,3 +64,24 @@ return [
         ],
     ],
 ];
+
+$sm = new ServiceManager($config['dependencies']);
+$sm->setService('config', $config);
+
+$projectionManager = $sm->get(ProjectionManager::class);
+
+$projection = $projectionManager->createProjection('test-projection', [
+    Projector::OPTION_PCNTL_DISPATCH => true,
+]);
+
+$projection
+    ->init(function (): array {
+        return ['counter' => 0];
+    })
+    ->fromAll()
+    ->whenAny(function (array $state, Message $message): array {
+        $state['counter']++;
+
+        return $state;
+    })
+    ->run(true);

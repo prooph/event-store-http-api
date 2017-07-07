@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace ProophTest\EventStore\Http\Api\Integration;
 
 use GuzzleHttp\Psr7\Request;
-use Http\Adapter\Guzzle6\Client;
 
 /**
  * @group integration
@@ -25,10 +24,34 @@ class DeleteProjectionTest extends AbstractHttpApiServerTestCase
      */
     public function it_receives_error_deleting_non_existing_projection(): void
     {
-        $request = new Request('POST', 'http://localhost:8080/projection/delete/unknown/true');
+        $request = new Request('POST', 'http://localhost:8080/projection/delete/test-projection/true');
 
         $response = $this->client->sendRequest($request);
 
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function it_deletes_existing_projections(): void
+    {
+        $this->createProjection();
+
+        $this->createReadModelProjection();
+
+        $this->waitForProjectionsToStart();
+
+        $request = new Request('POST', 'http://localhost:8080/projection/delete/test-projection/true');
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
+
+        $request = new Request('POST', 'http://localhost:8080/projection/delete/test-readmodel-projection/true');
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
     }
 }

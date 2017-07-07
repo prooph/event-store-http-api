@@ -27,6 +27,12 @@ final class UpdateStreamMetadata implements MiddlewareInterface
      */
     private $eventStore;
 
+    private $validRequestContentTypes = [
+        'application/vnd.eventstore.atom+json',
+        'application/json',
+        'application/atom+json',
+    ];
+
     public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
@@ -36,7 +42,7 @@ final class UpdateStreamMetadata implements MiddlewareInterface
     {
         $streamName = urldecode($request->getAttribute('streamname'));
 
-        if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
+        if (! in_array($request->getHeaderLine('Content-Type'), $this->validRequestContentTypes)) {
             return new EmptyResponse(415);
         }
 

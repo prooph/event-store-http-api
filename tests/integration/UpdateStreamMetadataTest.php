@@ -25,7 +25,41 @@ class UpdateStreamMetadataTest extends AbstractHttpApiServerTestCase
     public function it_updates_stream_metadata(): void
     {
         $this->createTestStream();
-        $this->updateStreamMetadata();
+
+        $request = new Request('GET', 'http://localhost:8080/streammetadata/teststream', [
+            'Accept' => 'application/vnd.eventstore.atom+json',
+        ]);
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame('[]', $response->getBody()->getContents());
+
+        $request = new Request(
+            'POST',
+            'http://localhost:8080/streammetadata/teststream',
+            [
+                'Content-Type' => 'application/vnd.eventstore.atom+json',
+            ],
+            '[
+              {"foo": "bar"},
+              {"foobar": "baz"}
+            ]'
+        );
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(204, $response->getStatusCode());
+
+        $request = new Request('GET', 'http://localhost:8080/streammetadata/teststream', [
+            'Accept' => 'application/vnd.eventstore.atom+json',
+        ]);
+
+        $response = $this->client->sendRequest($request);
+
+        $this->assertSame(
+            '[{"foo":"bar"},{"foobar":"baz"}]',
+            $response->getBody()->getContents()
+        );
 
         $request = new Request(
             'POST',

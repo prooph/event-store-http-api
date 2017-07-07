@@ -109,37 +109,37 @@ $app->get(
 );
 
 $app->post(
-    'projection/delete/{name}/{deleteEmittedEvents:true|false}',
+    '/projection/delete/{name}/{deleteEmittedEvents:true|false}',
     Action\DeleteProjection::class,
     'ProjectionManager::deleteProjection'
 );
 
 $app->post(
-    'projection/reset/{name}',
+    '/projection/reset/{name}',
     Action\ResetProjection::class,
     'ProjectionManager::resetProjection'
 );
 
 $app->post(
-    'projection/stop/{name}',
+    '/projection/stop/{name}',
     Action\StopProjection::class,
     'ProjectionManager::stopProjection'
 );
 
 $app->get(
-    'projection/status/{name}',
+    '/projection/status/{name}',
     Action\FetchProjectionStatus::class,
     'ProjectionManager::fetchProjectionStatus'
 );
 
 $app->get(
-    'projection/state/{name}',
+    '/projection/state/{name}',
     Action\FetchProjectionState::class,
     'ProjectionManager::fetchProjectionState'
 );
 
 $app->get(
-    'projection/stream-positions/{name}',
+    '/projection/stream-positions/{name}',
     Action\FetchProjectionStreamPositions::class,
     'ProjectionManager::fetchProjectionStreamPositions'
 );
