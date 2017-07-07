@@ -41,6 +41,12 @@ final class PostStream implements MiddlewareInterface
      */
     private $messageFactory;
 
+    private $validRequestContentTypes = [
+        'application/vnd.eventstore.atom+json',
+        'application/json',
+        'application/atom+json',
+    ];
+
     public function __construct(EventStore $eventStore, MessageFactory $messageFactory)
     {
         $this->eventStore = $eventStore;
@@ -49,7 +55,7 @@ final class PostStream implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
-        if ($request->getHeaderLine('Content-Type') !== 'application/vnd.eventstore.atom+json') {
+        if (! in_array($request->getHeaderLine('Content-Type'), $this->validRequestContentTypes)) {
             return new EmptyResponse(415);
         }
 
