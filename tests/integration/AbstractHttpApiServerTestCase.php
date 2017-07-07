@@ -54,6 +54,12 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             copy(__DIR__ . '/../../config/autoload/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php.copy');
         }
 
+        if (file_exists(__DIR__ . '/../../config/pipeline.php')) {
+            copy(__DIR__ . '/../../config/pipeline.php', __DIR__ . '/../../config/pipeline.php.copy');
+        }
+
+        copy(__DIR__ . '/../../config/pipeline.php.dist', __DIR__ . '/../../config/pipeline.php');
+
         $config = include __DIR__ . '/event_store.local.php';
         $configFile = '<?php return ' . var_export($config, true) . ';';
         // add server config
@@ -117,9 +123,16 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
         // remove server config
         unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
+        unlink(__DIR__ . '/../../config/pipeline.php');
 
         if (file_exists(__DIR__ . '/../../config/autoload/event_store.local.php.copy')) {
             copy(__DIR__ . '/../../config/autoload/event_store.local.php.copy', __DIR__ . '/../../config/autoload/event_store.local.php');
+            unlink(__DIR__ . '/../../config/autoload/event_store.local.php.copy');
+        }
+
+        if (file_exists(__DIR__ . '/../../config/pipeline.php.copy')) {
+            copy(__DIR__ . '/../../config/pipeline.php.copy', __DIR__ . '/../../config/pipeline.php');
+            unlink(__DIR__ . '/../../config/pipeline.php.copy');
         }
 
         // drop event streams table
