@@ -48,7 +48,7 @@ class DeleteProjectionTest extends AbstractHttpApiServerTestCase
 
         $this->assertSame(204, $response->getStatusCode());
 
-        $request = new Request('POST', 'http://localhost:8080/projection/delete/test-readmodel-projection/true');
+        $request = new Request('POST', 'http://localhost:8080/projection/delete/test-readmodel-projection/false');
 
         $response = $this->client->sendRequest($request);
 
