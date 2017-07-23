@@ -238,6 +238,6 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
     protected function waitForProjectionsToStart(): void
     {
-        usleep(100000);
+        usleep(200000);
     }
 }
