@@ -154,19 +154,19 @@ class LoadStreamTest extends TestCase
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
-        ])->willReturn('/streams/foo')->shouldBeCalled();
+        ])->willReturn('/stream/foo')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
-        ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/1/forward/3')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
             'count' => 3,
-        ])->willReturn('/streams/foo/head/backward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/head/backward/3')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
@@ -184,19 +184,19 @@ class LoadStreamTest extends TestCase
 
         $expected = [
             'title' => 'Event stream \'foo\'',
-            'id' => 'http://localhost:8080/streams/foo',
+            'id' => 'http://localhost:8080/stream/foo',
             'streamName' => 'foo',
             '_links' => [
                 [
-                    'uri' => 'http://localhost:8080/streams/foo',
+                    'uri' => 'http://localhost:8080/stream/foo',
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/1/forward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/1/forward/3',
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/head/backward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/head/backward/3',
                     'relation' => 'last',
                 ],
             ],
@@ -291,19 +291,19 @@ class LoadStreamTest extends TestCase
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
-        ])->willReturn('/streams/foo')->shouldBeCalled();
+        ])->willReturn('/stream/foo')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
-        ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/1/forward/3')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
             'count' => 3,
-        ])->willReturn('/streams/foo/head/backward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/head/backward/3')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
@@ -321,19 +321,19 @@ class LoadStreamTest extends TestCase
 
         $expected = [
             'title' => 'Event stream \'foo\'',
-            'id' => 'http://localhost:8080/streams/foo',
+            'id' => 'http://localhost:8080/stream/foo',
             'streamName' => 'foo',
             '_links' => [
                 [
-                    'uri' => 'http://localhost:8080/streams/foo',
+                    'uri' => 'http://localhost:8080/stream/foo',
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/1/forward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/1/forward/3',
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/head/backward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/head/backward/3',
                     'relation' => 'last',
                 ],
             ],
@@ -504,19 +504,19 @@ class LoadStreamTest extends TestCase
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
-        ])->willReturn('/streams/foo')->shouldBeCalled();
+        ])->willReturn('/stream/foo')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
-        ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/1/forward/3')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
             'count' => 3,
-        ])->willReturn('/streams/foo/head/backward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/head/backward/3')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
@@ -534,19 +534,19 @@ class LoadStreamTest extends TestCase
 
         $expected = [
             'title' => 'Event stream \'foo\'',
-            'id' => 'http://localhost:8080/streams/foo',
+            'id' => 'http://localhost:8080/stream/foo',
             'streamName' => 'foo',
             '_links' => [
                 [
-                    'uri' => 'http://localhost:8080/streams/foo',
+                    'uri' => 'http://localhost:8080/stream/foo',
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/1/forward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/1/forward/3',
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/head/backward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/head/backward/3',
                     'relation' => 'last',
                 ],
             ],
@@ -628,19 +628,19 @@ class LoadStreamTest extends TestCase
         $urlHelper = $this->prophesize(UrlHelper::class);
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
-        ])->willReturn('/streams/foo')->shouldBeCalled();
+        ])->willReturn('/stream/foo')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => '1',
             'direction' => 'forward',
             'count' => 3,
-        ])->willReturn('/streams/foo/1/forward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/1/forward/3')->shouldBeCalled();
         $urlHelper->generate('EventStore::load', [
             'streamname' => 'foo',
             'start' => 'head',
             'direction' => 'backward',
             'count' => 3,
-        ])->willReturn('/streams/foo/head/backward/3')->shouldBeCalled();
+        ])->willReturn('/stream/foo/head/backward/3')->shouldBeCalled();
 
         $delegate = $this->prophesize(DelegateInterface::class);
 
@@ -658,19 +658,19 @@ class LoadStreamTest extends TestCase
 
         $expected = [
             'title' => 'Event stream \'foo\'',
-            'id' => 'http://localhost:8080/streams/foo',
+            'id' => 'http://localhost:8080/stream/foo',
             'streamName' => 'foo',
             '_links' => [
                 [
-                    'uri' => 'http://localhost:8080/streams/foo',
+                    'uri' => 'http://localhost:8080/stream/foo',
                     'relation' => 'self',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/1/forward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/1/forward/3',
                     'relation' => 'first',
                 ],
                 [
-                    'uri' => 'http://localhost:8080/streams/foo/head/backward/3',
+                    'uri' => 'http://localhost:8080/stream/foo/head/backward/3',
                     'relation' => 'last',
                 ],
             ],
