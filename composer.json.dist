@@ -1,7 +1,7 @@
 {
     "name": "prooph/event-store-http-api",
     "description": "EventStore HTTP API",
-    "type": "library",
+    "type": "project",
     "license": "BSD-3-Clause",
     "homepage": "http://getprooph.org/",
     "authors": [
