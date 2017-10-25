@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Unit\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Http\Api\Middleware\BaseUrl;
 use Psr\Http\Message\ResponseInterface;
@@ -20,6 +20,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Helper\UrlHelper;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class BaseUrlTest extends TestCase
 {
@@ -47,11 +49,11 @@ class BaseUrlTest extends TestCase
         $request->getUri()->willReturn($uri->reveal());
         $request->withAttribute(BaseUrl::BASE_URL, '/http-api')->willReturn($modifiedRequest->reveal())->shouldBeCalled();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($finalRequest)->willReturn(new JsonResponse(''))->shouldBeCalled();
+        $handler = $this->prophesize(HandlerInterface::class);
+        $handler->{HANDLER_METHOD}($finalRequest)->willReturn(new JsonResponse(''))->shouldBeCalled();
 
         $middleware = new BaseUrl('/http-api', $urlHelper->reveal());
-        $response = $middleware->process($request->reveal(), $delegate->reveal());
+        $response = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
@@ -72,11 +74,11 @@ class BaseUrlTest extends TestCase
         $request->getUri()->willReturn($uri->reveal());
         $request->withAttribute(BaseUrl::BASE_URL, '/')->willReturn($modifiedRequest->reveal())->shouldBeCalled();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($modifiedRequest)->willReturn(new JsonResponse(''))->shouldBeCalled();
+        $handler = $this->prophesize(HandlerInterface::class);
+        $handler->{HANDLER_METHOD}($modifiedRequest)->willReturn(new JsonResponse(''))->shouldBeCalled();
 
         $middleware = new BaseUrl('/', $urlHelper->reveal());
-        $response = $middleware->process($request->reveal(), $delegate->reveal());
+        $response = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
     }
