@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace ProophTest\EventStore\Http\Api\Unit\Middleware;
 
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Http\Api\Middleware\BaseUrl;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Uri;
 use Zend\Expressive\Helper\UrlHelper;

@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Middleware;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Webimpress\HttpMiddlewareCompatibility\HandlerInterface;
 use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
