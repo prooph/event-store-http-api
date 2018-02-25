@@ -1,8 +1,8 @@
 <?php
 /**
  * This file is part of the prooph/event-store-http-api.
- * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
- * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2018 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -53,6 +53,13 @@ class MetadataMatcherBuilder
 
         foreach ($metadata as $key => $match) {
             if (isset($match['field'], $match['operator'], $match['value'])) {
+                /** @var Operator $operator */
+                $operator = $match['operator'];
+
+                if (($operator->is(Operator::IN()) || $operator->is(Operator::NOT_IN())) && is_string($match['value'])) {
+                    $match['value'] = explode(';', $match['value']);
+                }
+
                 $metadataMatcher = $metadataMatcher->withMetadataMatch(
                     $match['field'],
                     $match['operator'],
