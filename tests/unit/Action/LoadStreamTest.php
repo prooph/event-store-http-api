@@ -571,6 +571,130 @@ class LoadStreamTest extends TestCase
     /**
      * @test
      */
+    public function it_converts_in_filter_value_to_array(): void
+    {
+        $uuid1 = Uuid::uuid4()->toString();
+
+        $time1 = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+
+        $metadataMatcher = new MetadataMatcher();
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('foo', Operator::IN(), ['bar', 'baz'], FieldType::METADATA());
+        $metadataMatcher = $metadataMatcher->withMetadataMatch('message_name', Operator::EQUALS(), 'message_one', FieldType::MESSAGE_PROPERTY());
+
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore->load(new StreamName('foo'), 1, 3, $metadataMatcher)->willReturn(new ArrayIterator([
+            GenericEvent::fromArray([
+                'uuid' => $uuid1,
+                'message_name' => 'message_one',
+                'created_at' => $time1,
+                'payload' => ['one'],
+                'metadata' => [
+                    'foo' => 'bar',
+                ],
+            ]),
+        ]))->shouldBeCalled();
+
+        $messageConverter = new NoOpMessageConverter();
+
+        $uri = $this->prophesize(Uri::class);
+        $uri->getScheme()->willReturn('http')->shouldBeCalled();
+        $uri->getPort()->willReturn(8080)->shouldBeCalled();
+        $uri->getHost()->willReturn('localhost')->shouldBeCalled();
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getHeaderLine('Accept')->willReturn('application/vnd.eventstore.atom+json')->shouldBeCalled();
+        $request->getAttribute('streamname')->willReturn('foo')->shouldBeCalled();
+        $request->getAttribute('start')->willReturn('1')->shouldBeCalled();
+        $request->getAttribute('direction')->willReturn('forward')->shouldBeCalled();
+        $request->getAttribute('count')->willReturn('3')->shouldBeCalled();
+        $request->getUri()->willReturn($uri->reveal())->shouldBeCalled();
+        $request->getQueryParams()->willReturn([
+            'meta_0_field' => 'foo',
+            'meta_0_operator' => 'IN',
+            'meta_0_value' => 'bar;baz',
+            'meta_1_field' => 'missing_parts',
+            'meta_2_field' => 'invalid op',
+            'meta_2_operator' => 'INVALID',
+            'meta_2_value' => 'some value',
+            'property_0_field' => 'message_name',
+            'property_0_operator' => 'EQUALS',
+            'property_0_value' => 'message_one',
+            'property_1_field' => 'missing partts',
+            'property_2_field' => 'invalid_op',
+            'property_2_operator' => 'INVALID',
+            'property_2_value' => 'some value',
+        ])->shouldBeCalled();
+
+        $urlHelper = $this->prophesize(UrlHelper::class);
+        $urlHelper->generate('EventStore::load', [
+            'streamname' => 'foo',
+        ])->willReturn('/stream/foo')->shouldBeCalled();
+        $urlHelper->generate('EventStore::load', [
+            'streamname' => 'foo',
+            'start' => '1',
+            'direction' => 'forward',
+            'count' => 3,
+        ])->willReturn('/stream/foo/1/forward/3')->shouldBeCalled();
+        $urlHelper->generate('EventStore::load', [
+            'streamname' => 'foo',
+            'start' => 'head',
+            'direction' => 'backward',
+            'count' => 3,
+        ])->willReturn('/stream/foo/head/backward/3')->shouldBeCalled();
+
+        $delegate = $this->prophesize(DelegateInterface::class);
+
+        $action = new LoadStream($eventStore->reveal(), $messageConverter, $urlHelper->reveal());
+        $action->addTransformer(
+            new JsonTransformer(),
+            'application/vnd.eventstore.atom+json',
+            'application/atom+json',
+            'application/json'
+        );
+
+        $response = $action->process($request->reveal(), $delegate->reveal());
+
+        $this->assertSame(200, $response->getStatusCode());
+
+        $expected = [
+            'title' => 'Event stream \'foo\'',
+            'id' => 'http://localhost:8080/stream/foo',
+            'streamName' => 'foo',
+            '_links' => [
+                [
+                    'uri' => 'http://localhost:8080/stream/foo',
+                    'relation' => 'self',
+                ],
+                [
+                    'uri' => 'http://localhost:8080/stream/foo/1/forward/3',
+                    'relation' => 'first',
+                ],
+                [
+                    'uri' => 'http://localhost:8080/stream/foo/head/backward/3',
+                    'relation' => 'last',
+                ],
+            ],
+            'entries' => [
+                [
+                    'message_name' => 'message_one',
+                    'uuid' => $uuid1,
+                    'payload' => [
+                        0 => 'one',
+                    ],
+                    'metadata' => [
+                        'foo' => 'bar',
+                    ],
+                    'created_at' => $time1->format('Y-m-d\TH:i:s.u'),
+                ],
+            ],
+        ];
+
+        $this->assertSame($expected, json_decode($response->getBody()->getContents(), true));
+    }
+
+    /**
+     * @test
+     */
     public function it_returns_only_matched_metadata_and_properties_on_load_reverse(): void
     {
         $uuid1 = Uuid::uuid4()->toString();

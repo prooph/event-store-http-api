@@ -53,6 +53,13 @@ class MetadataMatcherBuilder
 
         foreach ($metadata as $key => $match) {
             if (isset($match['field'], $match['operator'], $match['value'])) {
+                /** @var Operator $operator */
+                $operator = $match['operator'];
+
+                if ($operator->is(Operator::IN()) || $operator->is(Operator::NOT_IN()) && is_string($match['value'])) {
+                    $match['value'] = explode(';', $match['value']);
+                }
+
                 $metadataMatcher = $metadataMatcher->withMetadataMatch(
                     $match['field'],
                     $match['operator'],
