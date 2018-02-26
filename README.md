@@ -56,7 +56,7 @@ Open a text file "foo.txt" and put the following content:
 
 Then run this command:
 
-    curl -i -d @foo.txt http://localhost:8080/streams/Prooph%5CModel%5CUser -H "Content-Type: application/vnd.eventstore.atom+json"
+    curl -i -d @foo.txt http://localhost:8080/stream/Prooph%5CModel%5CUser -H "Content-Type: application/vnd.eventstore.atom+json"
 
 You should see:
 
