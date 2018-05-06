@@ -53,7 +53,7 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $resBody = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode(), $resBody);
-        $this->assertSame('RUNNING', $resBody);
+        $this->assertSame('RUNNING', $response->getReasonPhrase());
     }
 
     private function fetchProjectionState(): void
