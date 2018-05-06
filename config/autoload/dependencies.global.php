@@ -12,24 +12,28 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\NoOpMessageConverter;
+use Prooph\EventStore\Http\Api\Container\Infrastructure\UrlHelperFactory as ProophUrlHelperFactory;
 use Prooph\EventStore\Http\Api\Container\Middleware\BaseUrlFactory;
 use Prooph\EventStore\Http\Api\Middleware\BaseUrl;
+use Prooph\EventStore\Http\Api\Middleware\ResponseFactory;
+use Prooph\EventStore\Http\Middleware\Action;
+use Prooph\EventStore\Http\Middleware\Container;
+use Prooph\EventStore\Http\Middleware\GenericEventFactory;
+use Prooph\EventStore\Http\Middleware\JsonTransformer;
+use Prooph\EventStore\Http\Middleware\UrlHelper as ProophUrlHelper;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Container\ErrorHandlerFactory;
 use Zend\Expressive\Container\ErrorResponseGeneratorFactory;
-use Zend\Expressive\Container\NotFoundDelegateFactory;
-use Zend\Expressive\Container\NotFoundHandlerFactory;
-use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Helper\UrlHelperFactory;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddlewareFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
-use Zend\Expressive\Middleware\NotFoundHandler;
 use Zend\Expressive\Router\FastRouteRouterFactory;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -40,6 +44,7 @@ return [
     'dependencies' => [
         'aliases' => [
             MessageConverter::class => NoOpMessageConverter::class,
+            ResponseFactoryInterface::class => ResponseFactory::class,
         ],
         'factories' => [
             // expressive
@@ -48,11 +53,12 @@ return [
             ErrorResponseGenerator::class => ErrorResponseGeneratorFactory::class,
             UrlHelper::class => UrlHelperFactory::class,
             UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
-            NotFoundDelegate::class => NotFoundDelegateFactory::class,
-            NotFoundHandler::class => NotFoundHandlerFactory::class,
             OriginalMessages::class => InvokableFactory::class,
             RouterInterface::class => FastRouteRouterFactory::class,
             BaseUrl::class => BaseUrlFactory::class,
+            ResponseFactory::class => InvokableFactory::class,
+            JsonTransformer::class => InvokableFactory::class,
+            ProophUrlHelper::class => ProophUrlHelperFactory::class,
             // app
             GenericEventFactory::class => InvokableFactory::class,
             // actions

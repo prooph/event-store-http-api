@@ -10,136 +10,136 @@
 
 declare(strict_types=1);
 
-use Prooph\EventStore\Http\Api\Action;
+use Prooph\EventStore\Http\Middleware\Action;
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
 
 /**
  * Expressive routed middleware
  */
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
+    $app->get(
+        '/stream/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
+        Action\LoadStream::class,
+        'EventStore::load'
+    )
+        ->setOptions([
+                'defaults' => [
+                    'start' => 1,
+                    'direction' => 'forward',
+                    'count' => 10,
+                ],
+            ]
+        );
 
-/** @var \Zend\Expressive\Application $app */
-
-// event store routes
-
-$app->get(
-    '/stream/{streamname}[/{start:head|[0-9]+}[/{direction:forward|backward}[/{count:[0-9]+}]]]',
-    Action\LoadStream::class,
-    'EventStore::load'
-)
-    ->setOptions([
-        'defaults' => [
-            'start' => 1,
-            'direction' => 'forward',
-            'count' => 10,
+    $app->post(
+        '/stream/{streamname}',
+        [
+            \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
+            Action\PostStream::class,
         ],
-    ]
-);
+        'EventStore::appendTo'
+    );
 
-$app->post(
-    '/stream/{streamname}',
-    [
-        \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
-        Action\PostStream::class,
-    ],
-    'EventStore::appendTo'
-);
+    $app->get(
+        '/streammetadata/{streamname}',
+        Action\FetchStreamMetadata::class,
+        'EventStore::fetchStreamMetadata'
+    );
 
-$app->get(
-    '/streammetadata/{streamname}',
-    Action\FetchStreamMetadata::class,
-    'EventStore::fetchStreamMetadata'
-);
+    $app->post(
+        '/streammetadata/{streamname}',
+        [
+            \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
+            Action\UpdateStreamMetadata::class,
+        ],
+        'EventStore::updateStreamMetadata'
+    );
 
-$app->post(
-    '/streammetadata/{streamname}',
-    [
-        \Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware::class,
-        Action\UpdateStreamMetadata::class,
-    ],
-    'EventStore::updateStreamMetadata'
-);
+    $app->post(
+        '/delete/{streamname}',
+        Action\DeleteStream::class,
+        'EventStore::delete'
+    );
 
-$app->post(
-    '/delete/{streamname}',
-    Action\DeleteStream::class,
-    'EventStore::delete'
-);
+    $app->get(
+        '/has-stream/{streamname}',
+        Action\HasStream::class,
+        'EventStore::hasStream'
+    );
 
-$app->get(
-    '/has-stream/{streamname}',
-    Action\HasStream::class,
-    'EventStore::hasStream'
-);
+    $app->get(
+        '/streams[/{filter}]',
+        Action\FetchStreamNames::class,
+        'EventStore::fetchStreamNames'
+    );
 
-$app->get(
-    '/streams[/{filter}]',
-    Action\FetchStreamNames::class,
-    'EventStore::fetchStreamNames'
-);
+    $app->get(
+        '/streams-regex/{filter}',
+        Action\FetchStreamNamesRegex::class,
+        'EventStore::fetchStreamNamesRegex'
+    );
 
-$app->get(
-    '/streams-regex/{filter}',
-    Action\FetchStreamNamesRegex::class,
-    'EventStore::fetchStreamNamesRegex'
-);
+    $app->get(
+        '/categories[/{filter}]',
+        Action\FetchCategoryNames::class,
+        'EventStore::fetchCategoryNames'
+    );
 
-$app->get(
-    '/categories[/{filter}]',
-    Action\FetchCategoryNames::class,
-    'EventStore::fetchCategoryNames'
-);
+    $app->get(
+        '/categories-regex/{filter}',
+        Action\FetchCategoryNamesRegex::class,
+        'EventStore::fetchCategoryNamesRegex'
+    );
 
-$app->get(
-    '/categories-regex/{filter}',
-    Action\FetchCategoryNamesRegex::class,
-    'EventStore::fetchCategoryNamesRegex'
-);
+    // projection manager routes
 
-// projection manager routes
+    $app->get(
+        '/projections[/{filter}]',
+        Action\FetchProjectionNames::class,
+        'ProjectionManager::fetchProjectionNames'
+    );
 
-$app->get(
-    '/projections[/{filter}]',
-    Action\FetchProjectionNames::class,
-    'ProjectionManager::fetchProjectionNames'
-);
+    $app->get(
+        '/projections-regex/{filter}',
+        Action\FetchProjectionNamesRegex::class,
+        'ProjectionManager::fetchProjectionNamesRegex'
+    );
 
-$app->get(
-    '/projections-regex/{filter}',
-    Action\FetchProjectionNamesRegex::class,
-    'ProjectionManager::fetchProjectionNamesRegex'
-);
+    $app->post(
+        '/projection/delete/{name}/{deleteEmittedEvents:true|false}',
+        Action\DeleteProjection::class,
+        'ProjectionManager::deleteProjection'
+    );
 
-$app->post(
-    '/projection/delete/{name}/{deleteEmittedEvents:true|false}',
-    Action\DeleteProjection::class,
-    'ProjectionManager::deleteProjection'
-);
+    $app->post(
+        '/projection/reset/{name}',
+        Action\ResetProjection::class,
+        'ProjectionManager::resetProjection'
+    );
 
-$app->post(
-    '/projection/reset/{name}',
-    Action\ResetProjection::class,
-    'ProjectionManager::resetProjection'
-);
+    $app->post(
+        '/projection/stop/{name}',
+        Action\StopProjection::class,
+        'ProjectionManager::stopProjection'
+    );
 
-$app->post(
-    '/projection/stop/{name}',
-    Action\StopProjection::class,
-    'ProjectionManager::stopProjection'
-);
+    $app->get(
+        '/projection/status/{name}',
+        Action\FetchProjectionStatus::class,
+        'ProjectionManager::fetchProjectionStatus'
+    );
 
-$app->get(
-    '/projection/status/{name}',
-    Action\FetchProjectionStatus::class,
-    'ProjectionManager::fetchProjectionStatus'
-);
+    $app->get(
+        '/projection/state/{name}',
+        Action\FetchProjectionState::class,
+        'ProjectionManager::fetchProjectionState'
+    );
 
-$app->get(
-    '/projection/state/{name}',
-    Action\FetchProjectionState::class,
-    'ProjectionManager::fetchProjectionState'
-);
-
-$app->get(
-    '/projection/stream-positions/{name}',
-    Action\FetchProjectionStreamPositions::class,
-    'ProjectionManager::fetchProjectionStreamPositions'
-);
+    $app->get(
+        '/projection/stream-positions/{name}',
+        Action\FetchProjectionStreamPositions::class,
+        'ProjectionManager::fetchProjectionStreamPositions'
+    );
+};
