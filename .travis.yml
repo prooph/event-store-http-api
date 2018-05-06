@@ -32,6 +32,7 @@ before_script:
   - mkdir -p "$HOME/.php-cs-fixer"
   - cp composer.json.dist composer.json
   - cp config/pipeline.php.dist config/pipeline.php
+  - cp config/development.config.php.dist config/development.config.php
   - phpenv config-rm xdebug.ini
   - composer self-update
   - composer update $DEPENDENCIES
