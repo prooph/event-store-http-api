@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Prooph\EventStore\Http\Api;
 
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Http\Middleware\GenericEventFactory;
 use Prooph\EventStore\Pdo\Container\PdoConnectionFactory;
 use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
 use Prooph\EventStore\Pdo\Container\PostgresProjectionManagerFactory;

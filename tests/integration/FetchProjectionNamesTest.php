@@ -55,8 +55,9 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["test-projection"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["test-projection"]', $resBody);
     }
 
     private function fetchProjectionWithName(): void
@@ -71,8 +72,9 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["test-projection"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["test-projection"]', $resBody);
     }
 
     private function fetchUnknownProjectionWithName(): void
@@ -87,8 +89,9 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 
     private function fetchProjectionsFromOffset(): void
@@ -103,8 +106,9 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 
     private function fetchProjectionsRegex(): void
@@ -119,8 +123,9 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["test-projection"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["test-projection"]', $resBody);
     }
 
     private function fetchUnknownProjectionRegex(): void
@@ -135,7 +140,8 @@ class FetchProjectionNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 }

@@ -51,8 +51,9 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["teststream"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["teststream"]', $resBody);
     }
 
     private function fetchStreamWithName(): void
@@ -67,8 +68,9 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["teststream"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["teststream"]', $resBody);
     }
 
     private function fetchUnknownStreamWithName(): void
@@ -83,8 +85,9 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 
     private function fetchStreamsFromOffset(): void
@@ -99,8 +102,9 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 
     private function fetchStreamsRegex(): void
@@ -115,8 +119,9 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["teststream"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["teststream"]', $resBody);
     }
 
     private function fetchUnknownStreamsRegex(): void
@@ -131,7 +136,8 @@ class FetchStreamNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('[]', $resBody);
     }
 }
