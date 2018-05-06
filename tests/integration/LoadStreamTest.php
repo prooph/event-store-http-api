@@ -277,7 +277,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
         $response = $this->client->sendRequest($request);
 
         $resBody = $response->getBody()->getContents();
-        $this->assertSame(200, $resBody);
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
         $json = $resBody;
 
