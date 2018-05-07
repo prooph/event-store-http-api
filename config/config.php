@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Prooph\ProophessorDo;
+namespace Prooph\EventStore\Http\Api;
 
 use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
