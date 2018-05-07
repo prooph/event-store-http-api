@@ -17,11 +17,16 @@ use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
 $cacheConfig = [
-    'config_cache_path' => 'data/cache/config-cache.php',
+    'config_cache_path' => 'data/config-cache.php',
 ];
 
 $aggregator = new ConfigAggregator([
     new ArrayProvider($cacheConfig),
+
+    \Zend\Expressive\Helper\ConfigProvider::class,
+    \Zend\Expressive\ConfigProvider::class,
+    \Zend\Expressive\Router\ConfigProvider::class,
+
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
     new PhpFileProvider('config/development.config.php'),
 ], $cacheConfig['config_cache_path']);

@@ -17,7 +17,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\Common\Messaging\Message;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Http\Api\GenericEventFactory;
+use Prooph\EventStore\Http\Middleware\GenericEventFactory;
 use Prooph\EventStore\Pdo\Container\PdoConnectionFactory;
 use Prooph\EventStore\Pdo\Container\PostgresEventStoreFactory;
 use Prooph\EventStore\Pdo\Container\PostgresProjectionManagerFactory;

@@ -10,19 +10,20 @@
 
 declare(strict_types=1);
 
-namespace Prooph\EventStore\Http\Api\Transformer;
+namespace ProophTest\EventStore\Http\Api\Unit\Middleware;
 
-use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use PHPUnit\Framework\TestCase;
+use Prooph\EventStore\Http\Api\Middleware\ResponseFactory;
 
-final class JsonTransformer implements Transformer
+class ResponseFactoryTest extends TestCase
 {
     /**
-     * @param array $result
-     * @return ResponseInterface
+     * @test
      */
-    public function createResponse(array $result): ResponseInterface
+    public function it_provides_response_object()
     {
-        return new JsonResponse($result);
+        $response = (new ResponseFactory())->createResponse(201);
+
+        $this->assertSame(201, $response->getStatusCode());
     }
 }

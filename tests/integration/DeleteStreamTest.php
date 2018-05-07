@@ -30,7 +30,7 @@ class DeleteStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
     }
 
     /**
@@ -42,6 +42,6 @@ class DeleteStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 }

@@ -48,7 +48,7 @@ class UpdateStreamMetadataTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
 
         $request = new Request('GET', 'http://localhost:8080/streammetadata/teststream', [
             'Accept' => 'application/vnd.eventstore.atom+json',
@@ -75,6 +75,6 @@ class UpdateStreamMetadataTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 }

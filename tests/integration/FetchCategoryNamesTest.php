@@ -62,8 +62,9 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["blog","user"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["blog","user"]', $resBody);
 
         // test fetch stream with name user
         $request = new Request(
@@ -76,8 +77,9 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["user"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["user"]', $resBody);
     }
 
     private function fetchCategoriesFromOffset(): void
@@ -92,8 +94,9 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["user"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["user"]', $resBody);
     }
 
     private function fetchCategoriesRegex(): void
@@ -108,8 +111,9 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["user"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["user"]', $resBody);
     }
 
     private function fetchCategoriesRegexFromOffset(): void
@@ -124,8 +128,9 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('["user"]', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('["user"]', $resBody);
     }
 
     protected function createTestStreams(): void
@@ -162,7 +167,7 @@ class FetchCategoryNamesTest extends AbstractHttpApiServerTestCase
 
             $response = $this->client->sendRequest($request);
 
-            $this->assertSame(204, $response->getStatusCode());
+            $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
         }
     }
 }

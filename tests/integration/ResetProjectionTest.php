@@ -28,7 +28,7 @@ class ResetProjectionTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 
     /**
@@ -46,12 +46,12 @@ class ResetProjectionTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
 
         $request = new Request('POST', 'http://localhost:8080/projection/reset/test-readmodel-projection');
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(204, $response->getStatusCode());
+        $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
     }
 }

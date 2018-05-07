@@ -51,7 +51,8 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
         $this->assertSame('RUNNING', $response->getReasonPhrase());
     }
 
@@ -67,8 +68,9 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('{"counter":3}', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('{"counter":3}', $resBody);
     }
 
     private function fetchProjectionStreamPositions(): void
@@ -83,8 +85,9 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('{"teststream":3}', $response->getBody()->getContents());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $this->assertSame('{"teststream":3}', $resBody);
     }
 
     private function fetchUnknownProjectionStatus(): void
@@ -99,7 +102,7 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 
     private function fetchUnknownProjectionState(): void
@@ -114,7 +117,7 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 
     private function fetchUnknownProjectionStreamPositions(): void
@@ -129,6 +132,6 @@ class FetchProjectionStateStatusStreamPositionsTest extends AbstractHttpApiServe
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode(), (string) $response->getBody());
     }
 }

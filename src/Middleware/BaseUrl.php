@@ -11,12 +11,11 @@ declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Middleware;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Helper\UrlHelper;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 final class BaseUrl implements MiddlewareInterface
 {
@@ -41,7 +40,7 @@ final class BaseUrl implements MiddlewareInterface
     /**
      * {@inheritdoc}
      */
-    public function process(ServerRequestInterface $request, HandlerInterface $handler)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri();
         $uriPath = $uri->getPath();
@@ -57,6 +56,6 @@ final class BaseUrl implements MiddlewareInterface
             $this->urlHelper->setBasePath($this->baseUrl);
         }
 
-        return $handler->{HANDLER_METHOD}($request);
+        return $handler->handle($request);
     }
 }

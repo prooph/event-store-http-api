@@ -48,8 +48,9 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $json = $response->getBody()->getContents();
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
+        $json = $resBody;
 
         $this->assertJson($json);
         $data = json_decode($json, true);
@@ -74,9 +75,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
-        $json = $response->getBody()->getContents();
+        $json = $resBody;
 
         $this->assertJson($json);
 
@@ -123,9 +125,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
-        $json = $response->getBody()->getContents();
+        $json = $resBody;
 
         $this->assertJson($json);
 
@@ -173,9 +176,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
-        $json = $response->getBody()->getContents();
+        $json = $resBody;
 
         $this->assertJson($json);
 
@@ -222,9 +226,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
-        $json = $response->getBody()->getContents();
+        $json = $resBody;
 
         $this->assertJson($json);
 
@@ -271,9 +276,10 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $response = $this->client->sendRequest($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $resBody = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode(), $resBody);
 
-        $json = $response->getBody()->getContents();
+        $json = $resBody;
 
         $this->assertJson($json);
 
