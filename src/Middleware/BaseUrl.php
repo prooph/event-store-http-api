@@ -1,12 +1,14 @@
 <?php
+
 /**
- * This file is part of the prooph/event-store-http-api.
+ * This file is part of prooph/event-store-http-api.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
  * (c) 2016-2018 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 declare(strict_types=1);
 
 namespace Prooph\EventStore\Http\Api\Middleware;
@@ -47,9 +49,9 @@ final class BaseUrl implements MiddlewareInterface
 
         $request = $request->withAttribute(self::BASE_URL, $this->baseUrl);
 
-        if ($this->baseUrl !== '/' && strpos($uriPath, $this->baseUrl) === 0) {
-            $path = substr($uriPath, strlen($this->baseUrl));
-            $path = '/' . ltrim($path, '/');
+        if ($this->baseUrl !== '/' && \strpos($uriPath, $this->baseUrl) === 0) {
+            $path = \substr($uriPath, \strlen($this->baseUrl));
+            $path = '/' . \ltrim($path, '/');
 
             $request = $request->withUri($uri->withPath($path));
 

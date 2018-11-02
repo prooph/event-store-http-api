@@ -1,6 +1,7 @@
 <?php
+
 /**
- * This file is part of the prooph/event-store-http-api.
+ * This file is part of prooph/event-store-http-api.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
  * (c) 2016-2018 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
@@ -48,13 +49,13 @@ $config = [
         ],
         'pdo_connection' => [
             'default' => [
-                'schema' => substr(getenv('DB_DRIVER'), 4),
-                'user' => getenv('DB_USERNAME'),
-                'password' => getenv('DB_PASSWORD'),
-                'host' => getenv('DB_HOST'),
-                'dbname' => getenv('DB_NAME'),
-                'port' => getenv('DB_PORT'),
-                'charset' => getenv('DB_CHARSET'),
+                'schema' => \substr(\getenv('DB_DRIVER'), 4),
+                'user' => \getenv('DB_USERNAME'),
+                'password' => \getenv('DB_PASSWORD'),
+                'host' => \getenv('DB_HOST'),
+                'dbname' => \getenv('DB_NAME'),
+                'port' => \getenv('DB_PORT'),
+                'charset' => \getenv('DB_CHARSET'),
             ],
         ],
         'projection_manager' => [

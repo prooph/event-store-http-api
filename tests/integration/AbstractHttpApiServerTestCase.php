@@ -1,6 +1,7 @@
 <?php
+
 /**
- * This file is part of the prooph/event-store-http-api.
+ * This file is part of prooph/event-store-http-api.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
  * (c) 2016-2018 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
@@ -46,24 +47,24 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
 
     protected function setUp(): void
     {
-        if (! extension_loaded('pcntl')) {
+        if (! \extension_loaded('pcntl')) {
             $this->markTestSkipped('pcntl extension missing');
         }
 
-        if (file_exists(__DIR__ . '/../../config/autoload/event_store.local.php')) {
-            copy(__DIR__ . '/../../config/autoload/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php.copy');
+        if (\file_exists(__DIR__ . '/../../config/autoload/event_store.local.php')) {
+            \copy(__DIR__ . '/../../config/autoload/event_store.local.php', __DIR__ . '/../../config/autoload/event_store.local.php.copy');
         }
 
-        if (file_exists(__DIR__ . '/../../config/pipeline.php')) {
-            copy(__DIR__ . '/../../config/pipeline.php', __DIR__ . '/../../config/pipeline.php.copy');
+        if (\file_exists(__DIR__ . '/../../config/pipeline.php')) {
+            \copy(__DIR__ . '/../../config/pipeline.php', __DIR__ . '/../../config/pipeline.php.copy');
         }
 
-        copy(__DIR__ . '/../../config/pipeline.php.dist', __DIR__ . '/../../config/pipeline.php');
+        \copy(__DIR__ . '/../../config/pipeline.php.dist', __DIR__ . '/../../config/pipeline.php');
 
         $config = include __DIR__ . '/event_store.local.php';
-        $configFile = '<?php return ' . var_export($config, true) . ';';
+        $configFile = '<?php return ' . \var_export($config, true) . ';';
         // add server config
-        file_put_contents(__DIR__ . '/../../config/autoload/event_store.local.php', $configFile);
+        \file_put_contents(__DIR__ . '/../../config/autoload/event_store.local.php', $configFile);
 
         $path = __DIR__ . '/../../public';
 
@@ -75,9 +76,9 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             2 => ['pipe', 'w'],
         ];
 
-        $process = proc_open($command, $descriptorSpec, $pipes);
+        $process = \proc_open($command, $descriptorSpec, $pipes);
 
-        $processDetails = proc_get_status($process);
+        $processDetails = \proc_get_status($process);
 
         $this->serverPid = $processDetails['pid'];
 
@@ -91,48 +92,48 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $attempts = 0;
 
         do {
-            $resource = @fsockopen('localhost', 8080, $failed);
+            $resource = @\fsockopen('localhost', 8080, $failed);
 
-            if (is_resource($resource)) {
+            if (\is_resource($resource)) {
                 break;
             }
 
             if (10 === $attempts) {
-                proc_terminate($process);
+                \proc_terminate($process);
                 $this->markTestSkipped('The stub server did not load in time (500ms).');
             }
 
             $attempts++;
-            usleep(50000);
+            \usleep(50000);
         } while (true);
     }
 
     protected function tearDown(): void
     {
         if ($this->projectionPid) {
-            posix_kill($this->projectionPid, SIGKILL);
+            \posix_kill($this->projectionPid, SIGKILL);
             $this->projectionPid = null;
         }
 
         if ($this->readModelProjectionPid) {
-            posix_kill($this->readModelProjectionPid, SIGKILL);
+            \posix_kill($this->readModelProjectionPid, SIGKILL);
             $this->readModelProjectionPid = null;
         }
 
-        posix_kill($this->serverPid, SIGTERM);
+        \posix_kill($this->serverPid, SIGTERM);
 
         // remove server config
-        unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
-        unlink(__DIR__ . '/../../config/pipeline.php');
+        \unlink(__DIR__ . '/../../config/autoload/event_store.local.php');
+        \unlink(__DIR__ . '/../../config/pipeline.php');
 
-        if (file_exists(__DIR__ . '/../../config/autoload/event_store.local.php.copy')) {
-            copy(__DIR__ . '/../../config/autoload/event_store.local.php.copy', __DIR__ . '/../../config/autoload/event_store.local.php');
-            unlink(__DIR__ . '/../../config/autoload/event_store.local.php.copy');
+        if (\file_exists(__DIR__ . '/../../config/autoload/event_store.local.php.copy')) {
+            \copy(__DIR__ . '/../../config/autoload/event_store.local.php.copy', __DIR__ . '/../../config/autoload/event_store.local.php');
+            \unlink(__DIR__ . '/../../config/autoload/event_store.local.php.copy');
         }
 
-        if (file_exists(__DIR__ . '/../../config/pipeline.php.copy')) {
-            copy(__DIR__ . '/../../config/pipeline.php.copy', __DIR__ . '/../../config/pipeline.php');
-            unlink(__DIR__ . '/../../config/pipeline.php.copy');
+        if (\file_exists(__DIR__ . '/../../config/pipeline.php.copy')) {
+            \copy(__DIR__ . '/../../config/pipeline.php.copy', __DIR__ . '/../../config/pipeline.php');
+            \unlink(__DIR__ . '/../../config/pipeline.php.copy');
         }
 
         // drop event streams table
@@ -151,7 +152,7 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
         $attempts = 0;
 
         do {
-            $resource = @fsockopen('localhost', 8080, $failed);
+            $resource = @\fsockopen('localhost', 8080, $failed);
 
             if (false === $resource) {
                 break;
@@ -162,7 +163,7 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             }
 
             $attempts++;
-            usleep(50000);
+            \usleep(50000);
         } while (true);
     }
 
@@ -212,9 +213,9 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             2 => ['pipe', 'w'],
         ];
 
-        $process = proc_open($command, $descriptorSpec, $pipes);
+        $process = \proc_open($command, $descriptorSpec, $pipes);
 
-        $processDetails = proc_get_status($process);
+        $processDetails = \proc_get_status($process);
 
         $this->projectionPid = $processDetails['pid'];
     }
@@ -229,15 +230,15 @@ abstract class AbstractHttpApiServerTestCase extends TestCase
             2 => ['pipe', '/tmp/ab', 'w'],
         ];
 
-        $process = proc_open($command, $descriptorSpec, $pipes);
+        $process = \proc_open($command, $descriptorSpec, $pipes);
 
-        $processDetails = proc_get_status($process);
+        $processDetails = \proc_get_status($process);
 
         $this->readModelProjectionPid = $processDetails['pid'];
     }
 
     protected function waitForProjectionsToStart(): void
     {
-        usleep(200000);
+        \usleep(200000);
     }
 }
