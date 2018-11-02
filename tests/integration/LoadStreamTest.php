@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/event-store-http-api.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -53,7 +54,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
         $json = $resBody;
 
         $this->assertJson($json);
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('description', $data);
@@ -82,7 +83,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertJson($json);
 
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('id', $data);
@@ -132,7 +133,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertJson($json);
 
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('id', $data);
@@ -183,7 +184,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertJson($json);
 
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('id', $data);
@@ -233,7 +234,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertJson($json);
 
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('id', $data);
@@ -283,7 +284,7 @@ class LoadStreamTest extends AbstractHttpApiServerTestCase
 
         $this->assertJson($json);
 
-        $data = json_decode($json, true);
+        $data = \json_decode($json, true);
 
         $this->assertArrayHasKey('title', $data);
         $this->assertArrayHasKey('id', $data);
